@@ -1,0 +1,9 @@
+Universe   = vanilla
+Executable = process_logs.sh
+Log        = ./job_logs/job.$(Cluster).log
+Output   = ./job_logs/job.$(Cluster).$(Process).out
+Error      = ./job_logs/job.$(Cluster).$(Process).err
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT
+
+
