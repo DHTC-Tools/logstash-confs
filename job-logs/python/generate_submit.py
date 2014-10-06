@@ -7,6 +7,7 @@ import os
 import argparse
 
 JOB_LOG_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com/"
+CONDOR_SUBMIT_TEMPLATE = "../condor/submit_template"
 
 def validate_date(arg):
     """
@@ -71,6 +72,7 @@ def process_logs(start_date, end_date, work_directory):
     end_date   - last date to dowload job data for
     work_directory  - directory to download files to
     """
+    current_date = start_date
     while current_date <= end_date:
         csv_file = "jobsarchived{0}{1}{2}.csv".format(current_date.year,
                                                       current_date.month,
@@ -78,7 +80,40 @@ def process_logs(start_date, end_date, work_directory):
         processed_file = "{0}-processed.csv".format(csv_file.split('.')[0])
         input_file = open(os.path.join(work_directory, csv_file), 'r')
         output_file = open(os.path.join(work_directory, processed_file_file), 'w')
+        error_lines = 0
         for line in input_file:
+            if len(line.split(',')) != 87:
+                error_lines += 1
+            else:
+                output_file.write(line)
+        if error_lines != 0:
+            sys.stderr.write("{0} lines skipped due to errors\n".format(error_lines))
+        current_date += datetime.timedelta(days=1)
+
+def create_submission(start_date, end_date, work_directory):
+    """
+    Create a condor submit file and ancillary files needed to
+
+    parameters:
+    start_date - beginning date to start downloading from
+    end_date   - last date to dowload job data for
+    work_directory  - directory to download files to
+    """
+    submission_file = open(CONDOR_SUBMIT_TEMPLATE, 'r').read()
+    current_date = start_date
+    while current_date <= end_date:
+        date_string = current_date.isoformat().replace('-', '')
+        submit_addition = "arguments = {0}\n".format(date_string)
+        submit_addition += "queue 1\n"
+        submission_file += submit_addition
+        current_date += datetime.timedelta(days=1)
+    output_filename = "process_logs_{0}_{1}.submit".format(start_date.isoformat(),
+                                                            end_date.isoformat())
+    submit_file = open(os.path.join(work_directory, output_filename), 'w')
+    submit_file.write(submission_file)
+    submit_file.close()
+
+
 
 
 def main():
@@ -114,7 +149,7 @@ def main():
         sys.exit(1)
     download_logs(start_date, end_date, args.location)
     process_logs(start_date, end_date, args.location)
-    create_submit_file(start_date, end_date, args.location)
+    create_submission(start_date, end_date, args.location)
 
 
 
