@@ -103,12 +103,17 @@ def create_submission(start_date, end_date, work_directory):
     current_date = start_date
     while current_date <= end_date:
         date_string = current_date.isoformat().replace('-', '')
-        submit_addition = "arguments = {0}\n".format(date_string)
+        es_index = "jobsarchived_{0}_{0}".format(current_date.year,
+                                                 current_date.isocalendar()[1])
+        submit_addition = "arguments = {0} {1}\n".format(date_string,
+                                                         es_index)
+        submit_addition += ("transfer_input_files = " +
+                            "jobsarchived{0}-processed.csv\n".format())
         submit_addition += "queue 1\n"
         submission_file += submit_addition
         current_date += datetime.timedelta(days=1)
     output_filename = "process_logs_{0}_{1}.submit".format(start_date.isoformat(),
-                                                            end_date.isoformat())
+                                                           end_date.isoformat())
     submit_file = open(os.path.join(work_directory, output_filename), 'w')
     submit_file.write(submission_file)
     submit_file.close()
