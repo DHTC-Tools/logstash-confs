@@ -80,7 +80,7 @@ def create_submission(start_date, end_date, work_directory):
     current_date = start_date
     while current_date <= end_date:
         date_string = current_date.isoformat().replace('-', '')
-        es_index = "jobsarchived_{0}_{0:0>2}".format(current_date.year,
+        es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                      current_date.isocalendar()[1])
         submit_addition = "arguments = {0} {1}\n".format(date_string,
                                                          es_index)
@@ -95,7 +95,8 @@ def create_submission(start_date, end_date, work_directory):
     submit_file.write(submission_file)
     submit_file.close()
     for filename in ANCILLARY_FILES:
-        shutil.copyfile(filename, os.path.join(work_directory, filename))
+        dst_file = os.path.basename(filename)
+        shutil.copyfile(filename, os.path.join(work_directory, dst_file))
 
 
 
