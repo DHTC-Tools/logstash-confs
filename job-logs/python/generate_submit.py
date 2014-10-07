@@ -8,7 +8,7 @@ import argparse
 import tempfile
 import shutil
 
-JOB_LOG_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com/"
+JOB_LOG_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com"
 CONDOR_SUBMIT_TEMPLATE = "../condor/submit_template"
 
 def validate_date(arg):
