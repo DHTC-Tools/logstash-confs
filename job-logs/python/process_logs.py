@@ -36,7 +36,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         sys.stderr.write("Need an argument\n")
         sys.exit(1)
-    if len(sys.argv) != 8:
+    if len(sys.argv[1]) != 8:
         sys.stderr.write("Invalid date argument: {0}\n".format(sys.argv[1]))
     try:
         int(sys.argv[1])
