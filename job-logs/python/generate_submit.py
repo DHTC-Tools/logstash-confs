@@ -127,7 +127,6 @@ def main():
                          "got {0}\n".format(args.end_date))
         sys.exit(1)
     download_logs(start_date, end_date, args.location)
-    process_logs(start_date, end_date, args.location)
     create_submission(start_date, end_date, args.location)
     sys.stdout.write("Submission set up at {0}\n".format(args.location))
 
