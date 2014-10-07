@@ -22,6 +22,7 @@ def download_log(date_string):
         sys.stderr.write("Can't download {0}".format(csv_url))
         return None
     output_file = open(csv_file, 'w')
+    error_lines = 0
     for line in request:
         if len(line.split(',')) != 87:
             error_lines += 1
