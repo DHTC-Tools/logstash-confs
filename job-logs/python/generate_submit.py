@@ -9,6 +9,9 @@ import tempfile
 import shutil
 
 JOB_LOG_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com"
+ANCILLARY_FILES = ['process_logs.py',
+                   '../condor/ingest.sh',
+                   '../logstash/joblog.conf']
 CONDOR_SUBMIT_TEMPLATE = "../condor/submit_template"
 
 def validate_date(arg):
@@ -91,7 +94,8 @@ def create_submission(start_date, end_date, work_directory):
     submit_file = open(os.path.join(work_directory, output_filename), 'w')
     submit_file.write(submission_file)
     submit_file.close()
-
+    for filename in ANCILLARY_FILES:
+        shutil.copyfile(filename, os.path.join(work_directory, filename))
 
 
 
