@@ -71,6 +71,7 @@ def create_submission(start_date, end_date, work_directory):
     for filename in ANCILLARY_FILES:
         dst_file = os.path.basename(filename)
         shutil.copyfile(filename, os.path.join(work_directory, dst_file))
+    os.mkdir(os.path.join(work_directory, "job_logs"))
 
 def main():
     """
