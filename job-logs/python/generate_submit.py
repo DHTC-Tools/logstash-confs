@@ -64,34 +64,6 @@ def download_logs(start_date, end_date, work_directory):
 
     return None
 
-def process_logs(start_date, end_date, work_directory):
-    """
-    Process the log files in work_directory and ensure that
-    they are valid job logs in csv format
-
-    parameters:
-    start_date - beginning date to start downloading from
-    end_date   - last date to dowload job data for
-    work_directory  - directory to download files to
-    """
-    current_date = start_date
-    while current_date <= end_date:
-        csv_file = "jobsarchived{0}{1:0>2}{2:0>2}.csv".format(current_date.year,
-                                                              current_date.month,
-                                                              current_date.day)
-        processed_file = "{0}-processed.csv".format(csv_file.split('.')[0])
-        input_file = open(os.path.join(work_directory, csv_file), 'r')
-        output_file = open(os.path.join(work_directory, processed_file), 'w')
-        error_lines = 0
-        for line in input_file:
-            if len(line.split(',')) != 87:
-                error_lines += 1
-            else:
-                output_file.write(line)
-        if error_lines != 0:
-            sys.stderr.write("{0} lines skipped due to errors\n".format(error_lines))
-        current_date += datetime.timedelta(days=1)
-
 def create_submission(start_date, end_date, work_directory):
     """
     Create a condor submit file and ancillary files needed to
