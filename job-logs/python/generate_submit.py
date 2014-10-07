@@ -2,13 +2,12 @@
 
 import sys
 import datetime
-import urllib2
 import os
 import argparse
 import tempfile
 import shutil
 
-JOB_LOG_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com"
+
 ANCILLARY_FILES = ['process_logs.py',
                    '../condor/ingest.sh',
                    '../logstash/joblog.conf']
@@ -41,31 +40,7 @@ def validate_date(arg):
         return None
     return temp
 
-def download_logs(start_date, end_date, work_directory):
-    """
-    Download job log files from Amazon EC2 machines
 
-    parameters:
-    start_date - beginning date to start downloading from 
-    end_date   - last date to dowload job data for
-    work_directory  - directory to download files to
-    """
-    current_date = start_date
-    while current_date <= end_date:
-        csv_file = "jobsarchived{0}{1:0>2}{2:0>2}.csv".format(current_date.year,
-                                                              current_date.month,
-                                                              current_date.day)
-        csv_url = "{0}/{1}".format(JOB_LOG_URL, csv_file)
-        request = urllib2.urlopen(csv_url)
-        if request.getcode() != 200:
-            sys.stderr.write("Can't download {0}".format(csv_url))
-            continue
-        fh = open(os.path.join(work_directory, csv_file), 'w')
-        shutil.copyfileobj(request, fh)
-        fh.close()
-        current_date += datetime.timedelta(days=1)
-
-    return None
 
 def create_submission(start_date, end_date, work_directory):
     """
@@ -129,7 +104,6 @@ def main():
         sys.stderr.write("enddate must be in YYYYMMDD format, "
                          "got {0}\n".format(args.end_date))
         sys.exit(1)
-    download_logs(start_date, end_date, args.location)
     create_submission(start_date, end_date, args.location)
     sys.stdout.write("Submission set up at {0}\n".format(args.location))
 
