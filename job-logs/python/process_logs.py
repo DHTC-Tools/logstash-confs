@@ -28,7 +28,7 @@ def download_log(date_string):
             error_lines += 1
         else:
             output_file.write(line)
-    sys.stderr.write("{0} lines skipped due to errors")
+    sys.stderr.write("{0} lines skipped due to errors".format(error_lines))
     return None
 
 
