@@ -98,8 +98,6 @@ def create_submission(start_date, end_date, work_directory):
         dst_file = os.path.basename(filename)
         shutil.copyfile(filename, os.path.join(work_directory, dst_file))
 
-
-
 def main():
     """
     Handle argument parsing and dispatch to appropriate functions
@@ -134,8 +132,6 @@ def main():
     download_logs(start_date, end_date, args.location)
     create_submission(start_date, end_date, args.location)
     sys.stdout.write("Submission set up at {0}\n".format(args.location))
-
-
 
 if __name__ == '__main__':
     main()
