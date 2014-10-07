@@ -5,6 +5,8 @@ import datetime
 import urllib2
 import os
 import argparse
+import tempfile
+import shutil
 
 JOB_LOG_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com/"
 CONDOR_SUBMIT_TEMPLATE = "../condor/submit_template"
@@ -79,7 +81,7 @@ def process_logs(start_date, end_date, work_directory):
                                                       current_date.day)
         processed_file = "{0}-processed.csv".format(csv_file.split('.')[0])
         input_file = open(os.path.join(work_directory, csv_file), 'r')
-        output_file = open(os.path.join(work_directory, processed_file_file), 'w')
+        output_file = open(os.path.join(work_directory, processed_file), 'w')
         error_lines = 0
         for line in input_file:
             if len(line.split(',')) != 87:
