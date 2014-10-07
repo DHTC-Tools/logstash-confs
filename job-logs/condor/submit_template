@@ -1,5 +1,5 @@
 Universe   = vanilla
-Executable = process_logs.sh
+Executable = ingest.sh
 Log        = ./job_logs/job.$(Cluster).log
 Output   = ./job_logs/job.$(Cluster).$(Process).out
 Error      = ./job_logs/job.$(Cluster).$(Process).err

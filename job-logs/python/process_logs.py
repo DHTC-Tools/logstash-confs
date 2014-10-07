@@ -7,7 +7,7 @@ import sys
 
 csv_re = re.compile(r'(.*)\.csv')
 for logfile in os.listdir('.'):
-    if not logfile.endswith('.csv'):
+    if not logfile.endswith('-corrected.csv'):
         continue
     filename = csv_re.match(logfile).group(1)
     output = open('./{0}-corrected.csv'.format(filename), 'w')
