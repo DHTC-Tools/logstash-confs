@@ -15,7 +15,7 @@ def validate_date(arg):
     """
     Validate that text string provided is a valid date
     """
-    if len(arg) != 8:
+    if arg is None or len(arg) != 8:
         return None
     year = arg[0:4]
     month = arg[4:6]
@@ -129,11 +129,11 @@ def main():
     """
     parser = argparse.ArgumentParser(description='Create a condor submit file for processing job log data.')
     parser.add_argument('--location', dest='location', default=None,
-    help='Location directory to place files in')
+                        help='Location directory to place files in')
     parser.add_argument('--startdate', dest='start_date', default=None,
-    help='Date to start processing logs from')
+                        help='Date to start processing logs from')
     parser.add_argument('--enddate', dest='end_date', default=None,
-    help='Date to stop processing logs')
+                        help='Date to stop processing logs')
     args = parser.parse_args(sys.argv[1:])
     if args.location is None:
         args.location = tempfile.mkdtemp()
