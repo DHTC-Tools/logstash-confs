@@ -49,9 +49,9 @@ def download_logs(start_date, end_date, work_directory):
     """
     current_date = start_date
     while current_date <= end_date:
-        csv_file = "jobsarchived{0}{1}{2}.csv".format(current_date.year,
-                                                      current_date.month,
-                                                      current_date.day)
+        csv_file = "jobsarchived{0}{1:0>2}{2:0>2}.csv".format(current_date.year,
+                                                              current_date.month,
+                                                              current_date.day)
         csv_url = "{0}/{1}".format(JOB_LOG_URL, csv_file)
         request = urllib2.urlopen(csv_url)
         if request.getcode() != 200:
@@ -105,8 +105,8 @@ def create_submission(start_date, end_date, work_directory):
     current_date = start_date
     while current_date <= end_date:
         date_string = current_date.isoformat().replace('-', '')
-        es_index = "jobsarchived_{0}_{0}".format(current_date.year,
-                                                 current_date.isocalendar()[1])
+        es_index = "jobsarchived_{0}_{0:0>2}".format(current_date.year,
+                                                     current_date.isocalendar()[1])
         submit_addition = "arguments = {0} {1}\n".format(date_string,
                                                          es_index)
         submit_addition += ("transfer_input_files = " +
