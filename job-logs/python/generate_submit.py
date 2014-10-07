@@ -76,9 +76,9 @@ def process_logs(start_date, end_date, work_directory):
     """
     current_date = start_date
     while current_date <= end_date:
-        csv_file = "jobsarchived{0}{1}{2}.csv".format(current_date.year,
-                                                      current_date.month,
-                                                      current_date.day)
+        csv_file = "jobsarchived{0}{1:0>2}{2:0>2}.csv".format(current_date.year,
+                                                              current_date.month,
+                                                              current_date.day)
         processed_file = "{0}-processed.csv".format(csv_file.split('.')[0])
         input_file = open(os.path.join(work_directory, csv_file), 'r')
         output_file = open(os.path.join(work_directory, processed_file), 'w')
@@ -157,6 +157,7 @@ def main():
     download_logs(start_date, end_date, args.location)
     process_logs(start_date, end_date, args.location)
     create_submission(start_date, end_date, args.location)
+    sys.stdout.write("Submission set up at {0}\n".format(args.location))
 
 
 
