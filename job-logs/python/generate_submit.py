@@ -6,6 +6,7 @@ import os
 import argparse
 import tempfile
 import shutil
+import getpass
 
 
 ANCILLARY_FILES = ['process_logs.py',
@@ -52,13 +53,13 @@ def create_submission(start_date, end_date, work_directory):
     work_directory  - directory to download files to
     """
     submission_file = open(CONDOR_SUBMIT_TEMPLATE, 'r').read()
+    submission_file = submission_file.replace('USER', getpass.getuser())
     current_date = start_date
     while current_date <= end_date:
         date_string = current_date.isoformat().replace('-', '')
         es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                      current_date.isocalendar()[1])
-        submit_addition = "arguments = {0} {1}\n".format(date_string,
-                                                         es_index)
+        submit_addition = "arguments = {0} {1}\n".format(date_string, es_index)
         submit_addition += "transfer_input_files = joblog.conf, process_logs.py\n"
         submit_addition += "queue 1\n"
         submission_file += submit_addition

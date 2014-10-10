@@ -5,5 +5,6 @@ Output   = ./job_logs/job.$(Cluster).$(Process).out
 Error      = ./job_logs/job.$(Cluster).$(Process).err
 should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT
+concurrency_limits = USER$(Cluster):20
 
 
