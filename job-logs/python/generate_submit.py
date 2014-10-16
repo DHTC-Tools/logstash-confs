@@ -11,6 +11,7 @@ import getpass
 
 ANCILLARY_FILES = ['process_logs.py',
                    '../condor/ingest.sh',
+                   '../condor/generate_clean_logs.sh',
                    '../logstash/joblog.conf']
 CONDOR_SUBMIT_TEMPLATE = "../condor/submit_template"
 
@@ -88,7 +89,8 @@ def main():
     """
     Handle argument parsing and dispatch to appropriate functions
     """
-    parser = argparse.ArgumentParser(description='Create a condor submit file for processing job log data.')
+    parser = argparse.ArgumentParser(description='Create a condor submit file '
+                                                 'for processing job log data.')
     parser.add_argument('--location', dest='location', default=None,
                         help='Location directory to place files in')
     parser.add_argument('--startdate', dest='start_date', default=None,
@@ -96,7 +98,8 @@ def main():
     parser.add_argument('--enddate', dest='end_date', default=None,
                         help='Date to stop processing logs')
     parser.add_argument('--process_logs', dest='process_logs', default=False,
-                        type=bool, help='Create a submission that only processes logs')
+                        action='store_true', type=bool,
+                        help='Create a submission that only processes logs')
 
     args = parser.parse_args(sys.argv[1:])
     if args.location is None:
