@@ -2,6 +2,7 @@
 
 import sys
 import urllib2
+import argparse
 
 JOB_LOG_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com"
 
@@ -36,18 +37,20 @@ def download_log(date_string, save_raw=False):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        sys.stderr.write("Need an argument\n")
-        sys.exit(1)
-    if len(sys.argv[1]) != 8:
-        sys.stderr.write("Invalid date argument: {0}\n".format(sys.argv[1]))
-    try:
-        int(sys.argv[1])
-    except ValueError:
-        sys.stderr.write("Invalid date argument: {0}\n".format(sys.argv[1]))
-    if len(sys.argv) == 3 and sys.argv[2] == 'save':
-        save_raw = True
-    else:
-        save_raw = False
+    parser = argparse.ArgumentParser(description='Download and process ATLAS'
+                                                 'job records')
+    parser.add_argument('--date', dest='date', default=None,
+                        help='Date to download')
+    parser.add_argument('--save-raw', dest='save_raw',
+                        action='store_true',
+                        help='Save raw log files instead of replacing in place')
 
-    download_log(sys.argv[1], save_raw=True)
+    args = parser.parse_args(sys.argv[1:])
+    if len(args.date) != 8:
+        sys.stderr.write("Invalid date argument: {0}\n".format(args.date))
+    try:
+        int(args.date)
+    except ValueError:
+        sys.stderr.write("Invalid date argument: {0}\n".format(args.date))
+
+    download_log(sys.argv[1], args.save_raw)
