@@ -31,12 +31,16 @@ def download_log(date_string, save_raw=False):
         sys.stderr.write("Can't download {0}".format(csv_url))
         return None
     output_file = open(csv_file, 'w')
+    if save_raw:
+        orig_file = open(url_file, 'w')
     error_lines = 0
     for line in request:
         if len(line.split(',')) != 87:
             error_lines += 1
-        else:
-            output_file.write(line)
+            continue
+        output_file.write(line)
+        if save_raw:
+            orig_file.write(line)
     sys.stderr.write("{0} lines skipped due to errors".format(error_lines))
     return None
 
