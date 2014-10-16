@@ -6,7 +6,7 @@ import urllib2
 JOB_LOG_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com"
 
 
-def download_log(date_string):
+def download_log(date_string, save_raw=False):
     """
     Download job log files from Amazon EC2 machines
 
@@ -15,7 +15,10 @@ def download_log(date_string):
     end_date   - last date to dowload job data for
     work_directory  - directory to download files to
     """
-    csv_file = "jobsarchived{0}.csv".format(date_string)
+    if save_raw:
+        csv_file = "jobsarchived{0}-cleaned.csv".format(date_string)
+    else:
+        csv_file = "jobsarchived{0}.csv".format(date_string)
     csv_url = "{0}/{1}".format(JOB_LOG_URL, csv_file)
     request = urllib2.urlopen(csv_url)
     if request.getcode() != 200:
@@ -42,4 +45,9 @@ if __name__ == '__main__':
         int(sys.argv[1])
     except ValueError:
         sys.stderr.write("Invalid date argument: {0}\n".format(sys.argv[1]))
-    download_log(sys.argv[1])
+    if len(sys.argv) == 3 and sys.argv[2] == 'save':
+        save_raw = True
+    else:
+        save_raw = False
+
+    download_log(sys.argv[1], save_raw=True)

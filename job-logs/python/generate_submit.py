@@ -43,7 +43,7 @@ def validate_date(arg):
 
 
 
-def create_submission(start_date, end_date, work_directory):
+def create_submission(start_date, end_date, work_directory, process_logs=False):
     """
     Create a condor submit file and ancillary files needed to
 
@@ -51,9 +51,14 @@ def create_submission(start_date, end_date, work_directory):
     start_date - beginning date to start downloading from
     end_date   - last date to dowload job data for
     work_directory  - directory to download files to
+    process_logs - bool that indicate whether to only process logs
     """
     submission_file = open(CONDOR_SUBMIT_TEMPLATE, 'r').read()
     submission_file = submission_file.replace('USER', getpass.getuser())
+    if process_logs:
+        submission_file = submission_file.replace('EXECUTABLE', 'generate_clean_logs.sh')
+    else:
+        submission_file = submission_file.replace('EXECUTABLE', 'ingest.sh')
     current_date = start_date
     while current_date <= end_date:
         date_string = current_date.isoformat().replace('-', '')
@@ -74,7 +79,10 @@ def create_submission(start_date, end_date, work_directory):
         shutil.copyfile(filename, os.path.join(work_directory, dst_file))
     os.mkdir(os.path.join(work_directory, "job_logs"))
     os.chmod(os.path.join(work_directory, "process_logs.py"), 0o755)
-    os.chmod(os.path.join(work_directory, "ingest.sh"), 0o755)
+    if process_logs:
+        os.chmod(os.path.join(work_directory, "generate_clean_logs.sh"), 0o755)
+    else:
+        os.chmod(os.path.join(work_directory, "ingest.sh"), 0o755)
 
 def main():
     """
@@ -87,6 +95,9 @@ def main():
                         help='Date to start processing logs from')
     parser.add_argument('--enddate', dest='end_date', default=None,
                         help='Date to stop processing logs')
+    parser.add_argument('--process_logs', dest='process_logs', default=False,
+                        type=bool, help='Create a submission that only processes logs')
+
     args = parser.parse_args(sys.argv[1:])
     if args.location is None:
         args.location = tempfile.mkdtemp()
@@ -107,7 +118,7 @@ def main():
         sys.stderr.write("enddate must be in YYYYMMDD format, "
                          "got {0}\n".format(args.end_date))
         sys.exit(1)
-    create_submission(start_date, end_date, args.location)
+    create_submission(start_date, end_date, args.location, args.process_logs)
     sys.stdout.write("Submission set up at {0}\n".format(args.location))
 
 if __name__ == '__main__':
