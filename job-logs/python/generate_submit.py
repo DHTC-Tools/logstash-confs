@@ -97,8 +97,8 @@ def main():
                         help='Date to start processing logs from')
     parser.add_argument('--enddate', dest='end_date', default=None,
                         help='Date to stop processing logs')
-    parser.add_argument('--process_logs', dest='process_logs', default=False,
-                        action='store_true', type=bool,
+    parser.add_argument('--process_logs', dest='process_logs', 
+                        action='store_true', 
                         help='Create a submission that only processes logs')
 
     args = parser.parse_args(sys.argv[1:])
