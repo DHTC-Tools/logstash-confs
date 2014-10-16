@@ -21,7 +21,7 @@ def download_log(date_string, save_raw=False):
         csv_file = "jobsarchived{0}-cleaned.csv".format(date_string)
     else:
         csv_file = "jobsarchived{0}.csv".format(date_string)
-    csv_url = "{0}/{1}".format(JOB_LOG_URL, csv_file)
+    csv_url = "{0}/{1}".format(JOB_LOG_URL, url_file)
     try:
         request = urllib2.urlopen(csv_url)
         if request.getcode() != 200:
