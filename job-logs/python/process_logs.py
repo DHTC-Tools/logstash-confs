@@ -21,8 +21,12 @@ def download_log(date_string, save_raw=False):
     else:
         csv_file = "jobsarchived{0}.csv".format(date_string)
     csv_url = "{0}/{1}".format(JOB_LOG_URL, csv_file)
-    request = urllib2.urlopen(csv_url)
-    if request.getcode() != 200:
+    try:
+        request = urllib2.urlopen(csv_url)
+        if request.getcode() != 200:
+            sys.stderr.write("Can't download {0}".format(csv_url))
+            return None
+    except urllib2.HTTPError:
         sys.stderr.write("Can't download {0}".format(csv_url))
         return None
     output_file = open(csv_file, 'w')
