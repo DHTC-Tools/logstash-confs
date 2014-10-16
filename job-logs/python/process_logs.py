@@ -16,6 +16,7 @@ def download_log(date_string, save_raw=False):
     end_date   - last date to dowload job data for
     work_directory  - directory to download files to
     """
+    url_file = "jobsarchived{0}.csv".format(date_string)
     if save_raw:
         csv_file = "jobsarchived{0}-cleaned.csv".format(date_string)
     else:
@@ -57,4 +58,4 @@ if __name__ == '__main__':
     except ValueError:
         sys.stderr.write("Invalid date argument: {0}\n".format(args.date))
 
-    download_log(sys.argv[1], args.save_raw)
+    download_log(args.date, args.save_raw)
