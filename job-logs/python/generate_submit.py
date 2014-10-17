@@ -14,6 +14,7 @@ ANCILLARY_FILES = ['process_logs.py',
                    '../condor/generate_clean_logs.sh',
                    '../logstash/joblog.conf']
 CONDOR_SUBMIT_TEMPLATE = "../condor/submit_template"
+FAXBOX_URL = "http://faxbox.usatlas.org/group/logs/jobs/processed/"
 
 def validate_date(arg):
     """
@@ -43,8 +44,8 @@ def validate_date(arg):
     return temp
 
 
-
-def create_submission(start_date, end_date, work_directory, process_logs=False):
+def create_submission(start_date, end_date, work_directory,
+                      process_logs=False, data_source='faxbox'):
     """
     Create a condor submit file and ancillary files needed to
 
@@ -53,20 +54,34 @@ def create_submission(start_date, end_date, work_directory, process_logs=False):
     end_date   - last date to dowload job data for
     work_directory  - directory to download files to
     process_logs - bool that indicate whether to only process logs
+    data_source - location to get job records, i.e. amazon or faxbox
     """
     submission_file = open(CONDOR_SUBMIT_TEMPLATE, 'r').read()
     submission_file = submission_file.replace('USER', getpass.getuser())
     if process_logs:
-        submission_file = submission_file.replace('EXECUTABLE', 'generate_clean_logs.sh')
+        submission_file = submission_file.replace('EXECUTABLE',
+                                                  'generate_clean_logs.sh')
     else:
         submission_file = submission_file.replace('EXECUTABLE', 'ingest.sh')
+    if data_source == 'faxbox':
+        submission_file = submission_file.replace('PROCESS_STEP', '')
+    else:
+        submission_file = submission_file.replace('PROCESS_STEP',
+                                                  "./process_logs.py --date $1\n")
     current_date = start_date
     while current_date <= end_date:
         date_string = current_date.isoformat().replace('-', '')
         es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                      current_date.isocalendar()[1])
         submit_addition = "arguments = {0} {1}\n".format(date_string, es_index)
-        submit_addition += "transfer_input_files = joblog.conf, process_logs.py\n"
+        if data_source =='faxbox':
+            csv_url = "{0}/{1}/jobarchived{2}-corrected.csv".format(FAXBOX_URL,
+                                                                    current_date.year,
+                                                                    date_string)
+            submit_addition += "transfer_input_files = joblog.conf, " \
+                               "process_logs.py, {0}".format(csv_url)
+        else:
+            submit_addition += "transfer_input_files = joblog.conf, process_logs.py\n"
         submit_addition += "queue 1\n"
         submission_file += submit_addition
         current_date += datetime.timedelta(days=1)
@@ -85,6 +100,7 @@ def create_submission(start_date, end_date, work_directory, process_logs=False):
     else:
         os.chmod(os.path.join(work_directory, "ingest.sh"), 0o755)
 
+
 def main():
     """
     Handle argument parsing and dispatch to appropriate functions
@@ -100,6 +116,10 @@ def main():
     parser.add_argument('--process_logs', dest='process_logs', 
                         action='store_true', 
                         help='Create a submission that only processes logs')
+    parser.add_argument('--data_source', dest='data_source',
+                        choices=['amazon', 'faxbox'], default='faxbox',
+                        help='Choose between amazon and faxbox as source for '
+                             'job records')
 
     args = parser.parse_args(sys.argv[1:])
     if args.location is None:
@@ -121,7 +141,7 @@ def main():
         sys.stderr.write("enddate must be in YYYYMMDD format, "
                          "got {0}\n".format(args.end_date))
         sys.exit(1)
-    create_submission(start_date, end_date, args.location, args.process_logs)
+    create_submission(start_date, end_date, args.location, args.process_logs, args.data_source)
     sys.stdout.write("Submission set up at {0}\n".format(args.location))
 
 if __name__ == '__main__':
