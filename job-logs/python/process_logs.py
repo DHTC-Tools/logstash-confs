@@ -12,8 +12,7 @@ def download_log(date_string, save_raw=False):
     Download job log files from Amazon EC2 machines
 
     parameters:
-    start_date - beginning date to start downloading from
-    end_date   - last date to dowload job data for
+    date_string - date to start download
     work_directory  - directory to download files to
     """
     url_file = "jobsarchived{0}.csv".format(date_string)
