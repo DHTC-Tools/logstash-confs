@@ -32,15 +32,19 @@ def download_log(date_string, filename=None, save_raw=False):
         except urllib2.HTTPError:
             sys.stderr.write("Can't download {0}".format(csv_url))
             return None
+        if save_raw:
+            orig_file = open(url_file, 'w')
     else:
         request = open(filename, 'r')
+        if save_raw:
+            csv_file = "{0}-cleaned.csv".format(filename)
+        else:
+            csv_file = "{0}.csv".format(filename)
 
     output_file = open(csv_file, 'w')
-    if save_raw:
-        orig_file = open(url_file, 'w')
     error_lines = 0
     for line in request:
-        if save_raw:
+        if save_raw and filename is None:
             orig_file.write(line)
         line = line.replace("\t", '')
         if len(line.split(',')) != 87:
