@@ -21,6 +21,7 @@ def download_log(date_string, filename=None, save_raw=False):
         url_file = "jobsarchived{0}.csv".format(date_string)
         if save_raw:
             csv_file = "jobsarchived{0}-cleaned.csv".format(date_string)
+            bad_filename = "jobsarchived{0}-bad.csv".format(date_string)
         else:
             csv_file = "jobsarchived{0}.csv".format(date_string)
         csv_url = "{0}/{1}".format(JOB_LOG_URL, url_file)
@@ -34,10 +35,12 @@ def download_log(date_string, filename=None, save_raw=False):
             return None
         if save_raw:
             orig_file = open(url_file, 'w')
+            bad_file = open(bad_filename, 'w')
     else:
         request = open(filename, 'r')
         if save_raw:
             csv_file = "{0}-cleaned.csv".format(filename)
+            bad_file = open("{0}-bad.csv".format(filename))
         else:
             csv_file = "{0}.csv".format(filename)
 
@@ -48,6 +51,8 @@ def download_log(date_string, filename=None, save_raw=False):
             orig_file.write(line)
         line = line.replace("\t", '')
         if len(line.split(',')) != 87:
+            if save_raw:
+                bad_file.write(line)
             error_lines += 1
             continue
         output_file.write(line)
