@@ -67,7 +67,7 @@ if __name__ == '__main__':
                         help='Save raw log files instead of replacing in place')
 
     args = parser.parse_args(sys.argv[1:])
-    if len(args.date) != 8 and args.filename is not None:
+    if args.filename is not None and len(args.date) != 8:
         sys.stderr.write("Invalid date argument: {0}\n".format(args.date))
     if args.date is not None:
         try:
