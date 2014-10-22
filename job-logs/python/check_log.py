@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 import argparse
 import csv
@@ -11,14 +13,20 @@ def examine_log(filename, save_raw=False):
     filename - beginning date to start downloading from
     work_directory  - directory to download files to
     """
-    input_file =- open(filename, 'r')
+    input_file = open(filename, 'r')
+    bad_file = open('badlines.csv', 'w')
     csv_input = csv.reader(input_file)
     error = 0
+    lines = 0
     for row in csv_input:
+        lines += 1
         if len(row) != 87:
             error += 1
-    print error
-    sys.stderr.write("{0} lines skipped due to errors".format(error_lines))
+            bad_file.write(" ".join(row) + "\n")
+            continue
+    sys.stderr.write("{0} lines skipped due to errors".format(error))
+    sys.stderr.write("{0} lines processed".format(lines))
+    sys.stderr.write("{0}% bad lines ".format(float(error)/float(lines)))
     return None
 
 
