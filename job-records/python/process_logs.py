@@ -40,7 +40,7 @@ def download_log(date_string, filename=None, save_raw=False):
         request = open(filename, 'r')
         if save_raw:
             csv_file = "{0}-cleaned.csv".format(filename)
-            bad_file = open("{0}-bad.csv".format(filename))
+            bad_file = open("{0}-bad.csv".format(filename), 'w')
         else:
             csv_file = "{0}.csv".format(filename)
 
