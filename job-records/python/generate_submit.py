@@ -10,7 +10,7 @@ import getpass
 
 
 ANCILLARY_FILES = ['process_logs.py',
-                   'download_logs.py'
+                   'download_logs.py',
                    '../condor/ingest.sh',
                    '../condor/generate_clean_logs.sh',
                    '../logstash/joblog.conf']
