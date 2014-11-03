@@ -6,6 +6,20 @@ import re
 
 
 QUOTE_RE = re.compile(r'.*"[^,]*$')
+def continue_line(line):
+    """
+
+    :param line: line to examine to see if record continues to next
+                 line
+    :return: True if record is continued, False if the record is complete
+    """
+    if QUOTE_RE.match(line):
+        return True
+    elif (string.count('"') % 2) == 1:
+        return True
+    else:
+        return False
+
 def generate_log_lines(input_file, bad_file):
     """
     Generator that processes csv with ATLAS records and try to fix broken lines
@@ -18,7 +32,8 @@ def generate_log_lines(input_file, bad_file):
     buffer = ""
     for line in input_file:
         buffer += line
-        if QUOTE_RE.match(buffer):
+        if continue_line(buffer):
+            buffer = buffer.replace("\n", " ")
             continue
         else:
             record = buffer
@@ -46,7 +61,7 @@ def process_records(date_string):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process ATLAS job records')
     parser.add_argument('--date', dest='date', default=None, required=True,
-                        help='Date to download')
+                        help='Date to process')
 
     args = parser.parse_args(sys.argv[1:])
     if len(args.date) != 8:
@@ -57,4 +72,4 @@ if __name__ == '__main__':
     except ValueError:
         sys.stderr.write("Invalid date argument: {0}\n".format(args.date))
 
-    process_log(args.date)
+    process_records(args.date)
