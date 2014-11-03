@@ -14,9 +14,15 @@ def continue_line(line):
     :return: True if record is continued, False if the record is complete
     """
     if QUOTE_RE.match(line):
+        # if the line ends with an unclosed quote, it's continued
         return True
     elif (string.count('"') % 2) == 1:
+        # if the line doesn't have matched quotes, it's continued
         return True
+    elif len(line) > 2048:
+        # if the line is more than 2k in length, just close it and
+        # move to the next line
+        return False
     else:
         return False
 

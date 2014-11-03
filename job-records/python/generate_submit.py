@@ -10,11 +10,11 @@ import getpass
 
 
 ANCILLARY_FILES = ['process_logs.py',
+                   'download_logs.py'
                    '../condor/ingest.sh',
                    '../condor/generate_clean_logs.sh',
                    '../logstash/joblog.conf']
 CONDOR_SUBMIT_TEMPLATE = "../condor/submit_template"
-FAXBOX_URL = "http://faxbox.usatlas.org/group/logs/jobs/processed/"
 
 def validate_date(arg):
     """
@@ -63,25 +63,19 @@ def create_submission(start_date, end_date, work_directory,
                                                   'generate_clean_logs.sh')
     else:
         submission_file = submission_file.replace('EXECUTABLE', 'ingest.sh')
-    if data_source == 'faxbox':
-        submission_file = submission_file.replace('PROCESS_STEP', '')
-    else:
-        submission_file = submission_file.replace('PROCESS_STEP',
-                                                  "./process_logs.py --date $1\n")
     current_date = start_date
     while current_date <= end_date:
         date_string = current_date.isoformat().replace('-', '')
         es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                      current_date.isocalendar()[1])
-        submit_addition = "arguments = {0} {1}\n".format(date_string, es_index)
-        if data_source =='faxbox':
-            csv_url = "{0}/{1}/jobarchived{2}-corrected.csv".format(FAXBOX_URL,
-                                                                    current_date.year,
-                                                                    date_string)
-            submit_addition += "transfer_input_files = joblog.conf, " \
-                               "process_logs.py, {0}".format(csv_url)
+        if process_logs:
+            submit_addition = "arguments = {0} {1}\n".format(date_string,
+                                                             data_source)
         else:
-            submit_addition += "transfer_input_files = joblog.conf, process_logs.py\n"
+            submit_addition = "arguments = {0} {1}\n".format(date_string,
+                                                             data_source,
+                                                             es_index)
+        submit_addition += "transfer_input_files = joblog.conf, process_logs.py\n"
         submit_addition += "queue 1\n"
         submission_file += submit_addition
         current_date += datetime.timedelta(days=1)
@@ -108,9 +102,9 @@ def main():
     parser = argparse.ArgumentParser(description='Create a condor submit file '
                                                  'for processing job log data.')
     parser.add_argument('--location', dest='location', default=None,
-                        help='Location directory to place files in')
+                        help='Location of directory to place submit files')
     parser.add_argument('--startdate', dest='start_date', default=None,
-                        help='Date to start processing logs from')
+                        help='Date to start processing logs')
     parser.add_argument('--enddate', dest='end_date', default=None,
                         help='Date to stop processing logs')
     parser.add_argument('--process_logs', dest='process_logs', 
