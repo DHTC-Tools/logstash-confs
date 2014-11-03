@@ -16,7 +16,7 @@ def continue_line(line):
     if QUOTE_RE.match(line):
         # if the line ends with an unclosed quote, it's continued
         return True
-    elif (string.count('"') % 2) == 1:
+    elif (line.count('"') % 2) == 1:
         # if the line doesn't have matched quotes, it's continued
         return True
     elif len(line) > 2048:
