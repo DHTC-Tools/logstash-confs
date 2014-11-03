@@ -89,6 +89,7 @@ def create_submission(start_date, end_date, work_directory,
         shutil.copyfile(filename, os.path.join(work_directory, dst_file))
     os.mkdir(os.path.join(work_directory, "job_logs"))
     os.chmod(os.path.join(work_directory, "process_logs.py"), 0o755)
+    os.chmod(os.path.join(work_directory, "download_logs.py"), 0o755)
     if process_logs:
         os.chmod(os.path.join(work_directory, "generate_clean_logs.sh"), 0o755)
     else:
