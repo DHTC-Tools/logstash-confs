@@ -75,7 +75,8 @@ def create_submission(start_date, end_date, work_directory,
             submit_addition = "arguments = {0} {1}\n".format(date_string,
                                                              data_source,
                                                              es_index)
-        submit_addition += "transfer_input_files = joblog.conf, process_logs.py\n"
+        submit_addition += "transfer_input_files = joblog.conf, "
+        submit_addition += "process_logs.py, download_logs.py\n"
         submit_addition += "queue 1\n"
         submission_file += submit_addition
         current_date += datetime.timedelta(days=1)
