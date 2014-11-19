@@ -5,7 +5,7 @@ import urllib2
 import argparse
 
 AMAZON_CSV_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com"
-FAXBOX_CSV_URL = "http://faxbox.usatlas.org/"
+FAXBOX_CSV_URL = "http://faxbox.usatlas.org/group/logs/jobs/processed/"
 
 
 def download_log(date_string, source=None):
@@ -23,7 +23,9 @@ def download_log(date_string, source=None):
     elif source.lower() == 'amazon':
         csv_url = "{0}/{1}".format(AMAZON_CSV_URL, url_file)
     elif source.lower() == 'faxbox':
-        csv_url = "{0}/{1}".format(FAXBOX_CSV_URL, url_file)
+        csv_url = "{0}/{1}/{2}".format(FAXBOX_CSV_URL,
+                                       date_string[0:4],
+                                       url_file)
     else:
         return False
     try:
