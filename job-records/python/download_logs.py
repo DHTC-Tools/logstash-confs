@@ -21,8 +21,10 @@ def download_log(date_string, source=None):
     if source is None:
         return False
     elif source.lower() == 'amazon':
+        url_file = "jobsarchived{0}.csv".format(date_string)
         csv_url = "{0}/{1}".format(AMAZON_CSV_URL, url_file)
     elif source.lower() == 'faxbox':
+        url_file = "jobsarchived{0}-processed.csv".format(date_string)
         csv_url = "{0}/{1}/{2}".format(FAXBOX_CSV_URL,
                                        date_string[0:4],
                                        url_file)
