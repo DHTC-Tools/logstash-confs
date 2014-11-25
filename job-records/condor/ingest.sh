@@ -2,11 +2,13 @@
 
 export PATH=/bin:/usr/bin
 cur_dir=`pwd`
-./download_logs.py --date $1 --source $2
-if [ "$2" != "faxbox" ];
+if [ "$3" != "True" ];
 then
+    ./download_logs.py --date $1 --source $2
     ./process_logs.py --date $1
+else
+    ./download_logs.py --date $1 --source $2 --processed
 fi
-sed -i "s/ES_INDEX/$3/" joblog.conf
+sed -i "s/ES_INDEX/$4/" joblog.conf
 cat *-processed.csv | /opt/logstash/bin/logstash -f joblog.conf
 rm *.csv

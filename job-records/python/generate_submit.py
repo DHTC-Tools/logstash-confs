@@ -46,7 +46,8 @@ def validate_date(arg):
 
 
 def create_submission(start_date, end_date, work_directory,
-                      process_logs=False, data_source='faxbox'):
+                      process_logs=False, data_source='faxbox',
+                      processed):
     """
     Create a condor submit file and ancillary files needed to
     process logs (submits a job per day)
@@ -57,6 +58,7 @@ def create_submission(start_date, end_date, work_directory,
     work_directory  - directory to download files to
     process_logs - bool that indicate whether to only process logs
     data_source - location to get job records, i.e. amazon or faxbox
+    processed - whether to use preprocessed records
     """
     submission_file = open(CONDOR_SUBMIT_TEMPLATE, 'r').read()
     submission_file = submission_file.replace('USER', getpass.getuser())
@@ -72,12 +74,13 @@ def create_submission(start_date, end_date, work_directory,
                                                      current_date.isocalendar()[1])
         if process_logs:
             submit_addition = "arguments = {0} {1} {2}\n".format(date_string,
-                                                                data_source,
-                                                                es_index)
+                                                                 data_source,
+                                                                 es_index)
         else:
-            submit_addition = "arguments = {0} {1} {2}\n".format(date_string,
-                                                             data_source,
-                                                             es_index)
+            submit_addition = "arguments = {0} {1} {2} {3}\n".format(date_string,
+                                                                     data_source,
+                                                                     processed,
+                                                                     es_index)
         submit_addition += "transfer_input_files = joblog.conf, "
         submit_addition += "process_logs.py, download_logs.py\n"
         submit_addition += "queue 1\n"
@@ -208,6 +211,9 @@ def main():
     parser.add_argument('--by-week', dest='by_week',
                         action='store_true',
                         help='Process logs by week rather than by day')
+    parser.add_argument('--processed', dest='processed',
+                        action='store_true',
+                        help='Use processed logs from faxbox')
 
     args = parser.parse_args(sys.argv[1:])
     if args.location is None:
@@ -229,7 +235,15 @@ def main():
         sys.stderr.write("enddate must be in YYYYMMDD format, "
                          "got {0}\n".format(args.end_date))
         sys.exit(1)
-    create_submission(start_date, end_date, args.location, args.process_logs, args.data_source)
+    if args.by_week:
+        create_weekly_submission(start_date, end_date, args.location,
+                                 args.process_logs, args.data_source,
+                                 args.processed)
+    else:
+        create_submission(start_date, end_date, args.location,
+                          args.process_logs, args.data_source,
+                          args.processed)
+
     sys.stdout.write("Submission set up at {0}\n".format(args.location))
 
 if __name__ == '__main__':

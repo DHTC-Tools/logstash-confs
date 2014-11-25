@@ -10,7 +10,7 @@ shift
 shift
 shift
 while [ "$1" != "" ]; do
-    if [ "$processed" == 'processed' ];
+    if [ "$processed" == 'True' ];
     then
         ./download_logs.py --date $1 --source $source --processed
     else
