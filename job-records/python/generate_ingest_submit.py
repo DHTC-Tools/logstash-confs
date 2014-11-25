@@ -12,7 +12,6 @@ import getpass
 ANCILLARY_FILES = ['process_logs.py',
                    'download_logs.py',
                    '../condor/ingest.sh',
-                   '../condor/generate_clean_logs.sh',
                    '../logstash/joblog.conf']
 CONDOR_SUBMIT_TEMPLATE = "../condor/submit_template"
 
@@ -46,8 +45,7 @@ def validate_date(arg):
 
 
 def create_submission(start_date, end_date, work_directory,
-                      process_logs=False, data_source='faxbox',
-                      processed=False):
+                      data_source='faxbox', processed=False):
     """
     Create a condor submit file and ancillary files needed to
     process logs (submits a job per day)
@@ -56,31 +54,21 @@ def create_submission(start_date, end_date, work_directory,
     start_date - beginning date to start downloading from
     end_date   - last date to download job data for
     work_directory  - directory to download files to
-    process_logs - bool that indicate whether to only process logs
     data_source - location to get job records, i.e. amazon or faxbox
     processed - whether to use preprocessed records
     """
     submission_file = open(CONDOR_SUBMIT_TEMPLATE, 'r').read()
     submission_file = submission_file.replace('USER', getpass.getuser())
-    if process_logs:
-        submission_file = submission_file.replace('EXECUTABLE',
-                                                  'generate_clean_logs.sh')
-    else:
-        submission_file = submission_file.replace('EXECUTABLE', 'ingest.sh')
+    submission_file = submission_file.replace('EXECUTABLE', 'ingest.sh')
     current_date = start_date
     while current_date <= end_date:
         date_string = current_date.isoformat().replace('-', '')
         es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                      current_date.isocalendar()[1])
-        if process_logs:
-            submit_addition = "arguments = {0} {1} {2}\n".format(date_string,
+        submit_addition = "arguments = {0} {1} {2} {3}\n".format(date_string,
                                                                  data_source,
+                                                                 processed,
                                                                  es_index)
-        else:
-            submit_addition = "arguments = {0} {1} {2} {3}\n".format(date_string,
-                                                                     data_source,
-                                                                     processed,
-                                                                     es_index)
         submit_addition += "transfer_input_files = joblog.conf, "
         submit_addition += "process_logs.py, download_logs.py\n"
         submit_addition += "queue 1\n"
@@ -97,15 +85,11 @@ def create_submission(start_date, end_date, work_directory,
     os.mkdir(os.path.join(work_directory, "job_logs"))
     os.chmod(os.path.join(work_directory, "process_logs.py"), 0o755)
     os.chmod(os.path.join(work_directory, "download_logs.py"), 0o755)
-    if process_logs:
-        os.chmod(os.path.join(work_directory, "generate_clean_logs.sh"), 0o755)
-    else:
-        os.chmod(os.path.join(work_directory, "ingest.sh"), 0o755)
+    os.chmod(os.path.join(work_directory, "ingest.sh"), 0o755)
 
 
 def create_weekly_submission(start_date, end_date, work_directory,
-                             process_logs=False, data_source='faxbox',
-                             processed=False):
+                             data_source='faxbox', processed=False):
     """
     Create a condor submit file and ancillary files needed to
     process logs (submits a job per week)
@@ -114,17 +98,12 @@ def create_weekly_submission(start_date, end_date, work_directory,
     start_date - beginning date to start downloading from
     end_date   - last date to download job data for
     work_directory  - directory to download files to
-    process_logs - bool that indicate whether to only process logs
     data_source - location to get job records, i.e. amazon or faxbox
     processed - whether to use preprocessed records
     """
     submission_file = open(CONDOR_SUBMIT_TEMPLATE, 'r').read()
     submission_file = submission_file.replace('USER', getpass.getuser())
-    if process_logs:
-        submission_file = submission_file.replace('EXECUTABLE',
-                                                  'generate_clean_logs.sh')
-    else:
-        submission_file = submission_file.replace('EXECUTABLE', 'ingest_weekly.sh')
+    submission_file = submission_file.replace('EXECUTABLE', 'ingest_weekly.sh')
     current_date = start_date
     date_string = current_date.isoformat().replace('-', '')
     current_week = current_date.isocalendar()[1]
@@ -135,15 +114,9 @@ def create_weekly_submission(start_date, end_date, work_directory,
         if week != current_week:
             es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                          current_week)
-            if process_logs:
-                submit_addition = "arguments = {0} {1} {2}\n".format(data_source,
-                                                                     es_index,
-                                                                     processed,
-                                                                     date_string)
-            else:
-                submit_addition = "arguments = {0} {1} {2}\n".format(date_string,
-                                                                     data_source,
-                                                                     es_index)
+            submit_addition = "arguments = {0} {1} {2}\n".format(data_source,
+                                                                 es_index,
+                                                                 date_string)
             submit_addition += "transfer_input_files = joblog.conf, "
             submit_addition += "process_logs.py, download_logs.py\n"
             submit_addition += "queue 1\n"
@@ -155,15 +128,9 @@ def create_weekly_submission(start_date, end_date, work_directory,
             # need to write out arguments for this submit now
             es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                          current_week)
-            if process_logs:
-                submit_addition = "arguments = {0} {1} {2}\n".format(data_source,
-                                                                     es_index,
-                                                                     processed,
-                                                                     date_string)
-            else:
-                submit_addition = "arguments = {0} {1} {2}\n".format(date_string,
-                                                                     data_source,
-                                                                     es_index)
+            submit_addition = "arguments = {0} {1} {2}\n".format(date_string,
+                                                                 data_source,
+                                                                 es_index)
             submit_addition += "transfer_input_files = joblog.conf, "
             submit_addition += "process_logs.py, download_logs.py\n"
             submit_addition += "queue 1\n"
@@ -172,8 +139,8 @@ def create_weekly_submission(start_date, end_date, work_directory,
 
 
 
-    output_filename = "process_logs_{0}_{1}.submit".format(start_date.isoformat(),
-                                                           end_date.isoformat())
+    output_filename = "ingest_logs_{0}_{1}.submit".format(start_date.isoformat(),
+                                                          end_date.isoformat())
     submit_file = open(os.path.join(work_directory, output_filename), 'w')
     submit_file.write(submission_file)
     submit_file.close()
@@ -181,12 +148,8 @@ def create_weekly_submission(start_date, end_date, work_directory,
         dst_file = os.path.basename(filename)
         shutil.copyfile(filename, os.path.join(work_directory, dst_file))
     os.mkdir(os.path.join(work_directory, "job_logs"))
-    os.chmod(os.path.join(work_directory, "process_logs.py"), 0o755)
     os.chmod(os.path.join(work_directory, "download_logs.py"), 0o755)
-    if process_logs:
-        os.chmod(os.path.join(work_directory, "generate_clean_logs.sh"), 0o755)
-    else:
-        os.chmod(os.path.join(work_directory, "ingest.sh"), 0o755)
+    os.chmod(os.path.join(work_directory, "ingest_weekly.sh"), 0o755)
 
 
 def main():
@@ -201,9 +164,6 @@ def main():
                         help='Date to start processing logs')
     parser.add_argument('--enddate', dest='end_date', default=None,
                         help='Date to stop processing logs')
-    parser.add_argument('--process_logs', dest='process_logs', 
-                        action='store_true', 
-                        help='Create a submission that only processes logs')
     parser.add_argument('--data_source', dest='data_source',
                         choices=['amazon', 'faxbox'], default='faxbox',
                         help='Choose between amazon and faxbox as source for '
@@ -235,6 +195,8 @@ def main():
         sys.stderr.write("enddate must be in YYYYMMDD format, "
                          "got {0}\n".format(args.end_date))
         sys.exit(1)
+    if args.processed and args.data_source != 'faxbox':
+        sys.stderr.write("Can't ")
     if args.by_week:
         create_weekly_submission(start_date, end_date, args.location,
                                  args.process_logs, args.data_source,
@@ -245,6 +207,7 @@ def main():
                           args.processed)
 
     sys.stdout.write("Submission set up at {0}\n".format(args.location))
+    sys.exit(0)
 
 if __name__ == '__main__':
     main()
