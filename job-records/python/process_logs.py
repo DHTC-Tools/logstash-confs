@@ -6,6 +6,8 @@ import re
 
 
 QUOTE_RE = re.compile(r'.*"[^,]*$')
+
+
 def continue_line(line):
     """
 
@@ -26,6 +28,7 @@ def continue_line(line):
     else:
         return False
 
+
 def generate_log_lines(input_file, bad_file):
     """
     Generator that processes csv with ATLAS records and try to fix broken lines
@@ -35,17 +38,20 @@ def generate_log_lines(input_file, bad_file):
     :param badfile: file object to write lines with errors to
     :return: corrected lines stripped of tabs and embedded newlines
     """
-    buffer = ""
+    buf = ""
     for line in input_file:
-        buffer += line
-        if continue_line(buffer):
-            buffer = buffer.replace("\n", " ")
+        buf += line
+        if continue_line(buf):
+            buf = buf.replace("\n", " ")
             continue
         else:
-            record = buffer
-            buffer = ""
+            record = buf
+            buf = ""
+            if record.split(',')[1] == '':
+                bad_file.write(record)
+                # don't return bad records
+                continue
             yield record
-
 
 
 def process_records(date_string):

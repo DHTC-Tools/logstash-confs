@@ -5,10 +5,10 @@ import urllib2
 import argparse
 
 AMAZON_CSV_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com"
-FAXBOX_CSV_URL = "http://faxbox.usatlas.org/group/logs/jobs/processed/"
+FAXBOX_PROCESSED_CSV_URL = "http://faxbox.usatlas.org/group/logs/jobs/processed/"
+FAXBOX_RAW_CSV_URL = "http://faxbox.usatlas.org/group/logs/jobs/raw/"
 
-
-def download_log(date_string, source=None):
+def download_log(date_string, source=None, processed=False):
     """
     Download job log files from Amazon EC2 machines
 
@@ -17,17 +17,22 @@ def download_log(date_string, source=None):
     source      - string set to either faxbox or amazon to indicate where
                   to get logs from
     """
-    url_file = "jobsarchived{0}.csv".format(date_string)
     if source is None:
         return False
     elif source.lower() == 'amazon':
         url_file = "jobsarchived{0}.csv".format(date_string)
         csv_url = "{0}/{1}".format(AMAZON_CSV_URL, url_file)
     elif source.lower() == 'faxbox':
-        url_file = "jobsarchived{0}-processed.csv".format(date_string)
-        csv_url = "{0}/{1}/{2}".format(FAXBOX_CSV_URL,
-                                       date_string[0:4],
-                                       url_file)
+        if processed:
+            url_file = "jobsarchived{0}-processed.csv".format(date_string)
+            csv_url = "{0}/{1}/{2}".format(FAXBOX_PROCESSED_CSV_URL,
+                                           date_string[0:4],
+                                           url_file)
+        else:
+            url_file = "jobsarchived{0}.csv".format(date_string)
+            csv_url = "{0}/{1}/{2}".format(FAXBOX_RAW_CSV_URL,
+                                           date_string[0:4],
+                                           url_file)
     else:
         return False
     try:
@@ -51,6 +56,9 @@ if __name__ == '__main__':
     parser.add_argument('--source', dest='source', default=None,
                         choices=['amazon', 'faxbox'], required=True,
                         help='filename of input file')
+    parser.add_argument('--processed', dest='processed',
+                        action='store_true',
+                        help='Download processed logs (faxbox only)')
 
     args = parser.parse_args(sys.argv[1:])
     if len(args.date) != 8:
@@ -60,4 +68,4 @@ if __name__ == '__main__':
     except ValueError:
         sys.stderr.write("Invalid date argument: {0}\n".format(args.date))
 
-    download_log(args.date, args.source)
+    download_log(args.date, args.source, args.processed)
