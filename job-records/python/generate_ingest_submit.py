@@ -12,6 +12,7 @@ import getpass
 ANCILLARY_FILES = ['process_logs.py',
                    'download_logs.py',
                    '../condor/ingest.sh',
+                   '../condor/ingest_weekly.sh',
                    '../logstash/joblog.conf']
 CONDOR_SUBMIT_TEMPLATE = "../condor/submit_template"
 
