@@ -18,6 +18,7 @@ while [ "$1" != "" ]; do
         ./process_logs.py --date $1
 
     fi
+    shift
 done
 
 sed -i "s/ES_INDEX/$3/" joblog.conf
