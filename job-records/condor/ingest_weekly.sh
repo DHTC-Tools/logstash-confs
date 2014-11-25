@@ -12,15 +12,15 @@ shift
 while [ "$1" != "" ]; do
     if [ "$processed" == 'True' ];
     then
-        ./download_logs.py --date $1 --source $source --processed
+        ./download_logs.py --date $1 --source ${source} --processed
     else
-        ./download_logs.py --date $1 --source $source
+        ./download_logs.py --date $1 --source ${source}
         ./process_logs.py --date $1
 
     fi
     shift
 done
 
-sed -i "s/ES_INDEX/$3/" joblog.conf
+sed -i "s/ES_INDEX/$es_index/" joblog.conf
 cat *-processed.csv | /opt/logstash/bin/logstash -f joblog.conf
 rm *.csv
