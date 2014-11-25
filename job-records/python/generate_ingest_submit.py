@@ -115,8 +115,9 @@ def create_weekly_submission(start_date, end_date, work_directory,
         if week != current_week:
             es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                          current_week)
-            submit_addition = "arguments = {0} {1} {2}\n".format(data_source,
+            submit_addition = "arguments = {0} {1} {2} {3}\n".format(data_source,
                                                                  es_index,
+                                                                 processed,
                                                                  date_string)
             submit_addition += "transfer_input_files = joblog.conf, "
             submit_addition += "process_logs.py, download_logs.py\n"
@@ -129,8 +130,9 @@ def create_weekly_submission(start_date, end_date, work_directory,
             # need to write out arguments for this submit now
             es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                          current_week)
-            submit_addition = "arguments = {0} {1} {2}\n".format(date_string,
+            submit_addition = "arguments = {0} {1} {2} {3}\n".format(date_string,
                                                                  data_source,
+                                                                 processed,
                                                                  es_index)
             submit_addition += "transfer_input_files = joblog.conf, "
             submit_addition += "process_logs.py, download_logs.py\n"
