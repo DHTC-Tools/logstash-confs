@@ -199,12 +199,10 @@ def main():
         sys.stderr.write("Can't ")
     if args.by_week:
         create_weekly_submission(start_date, end_date, args.location,
-                                 args.process_logs, args.data_source,
-                                 args.processed)
+                                 args.data_source, args.processed)
     else:
         create_submission(start_date, end_date, args.location,
-                          args.process_logs, args.data_source,
-                          args.processed)
+                          args.data_source, args.processed)
 
     sys.stdout.write("Submission set up at {0}\n".format(args.location))
     sys.exit(0)
