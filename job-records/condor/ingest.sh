@@ -8,5 +8,5 @@ then
     ./process_logs.py --date $1
 fi
 sed -i "s/ES_INDEX/$3/" joblog.conf
-cat jobsarchived$1-processed.csv | /opt/logstash/bin/logstash -f joblog.conf
+cat *-processed.csv | /opt/logstash/bin/logstash -f joblog.conf
 rm *.csv
