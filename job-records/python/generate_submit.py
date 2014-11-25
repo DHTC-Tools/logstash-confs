@@ -47,7 +47,7 @@ def validate_date(arg):
 
 def create_submission(start_date, end_date, work_directory,
                       process_logs=False, data_source='faxbox',
-                      processed):
+                      processed=False):
     """
     Create a condor submit file and ancillary files needed to
     process logs (submits a job per day)
