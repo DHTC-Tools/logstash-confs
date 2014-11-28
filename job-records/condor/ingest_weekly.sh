@@ -29,3 +29,5 @@ while [ "$1" != "" ]; do
 done
 
 rm *.csv
+# need to delete joblog.conf to prevent modified version from being transferred back
+rm joblog.conf
