@@ -4,7 +4,7 @@ import sys
 import datetime
 import argparse
 
-import pyelasticsearch
+import elasticsearch
 
 
 ES_MASTER = 'http://uct2-es-head.mwt2.org:9200'
