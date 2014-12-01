@@ -64,19 +64,19 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
     calculated_queue_time = 0
     week = day.isocalendar()[1]
     # want to get the week before and after since
-    index = 'jobsrecord_2014_{0}'.format(week - 1)
-    index += ',jobsrecord_2014_{0}'.format(week)
-
+    index = 'jobsarchived_2014_{0}'.format(week - 1)
+    index += ',jobsarchived_2014_{0}'.format(week)
     results = es.search(index=index,
                         body={"filter":
                                   {"range":
                                         {"MODIFICATIONTIME":
                                              {"gte": day.isoformat(),
                                               "lte": day.isoformat()}}}},
-                        fields="queue_time, STARTTIME, CREATIONTIME",
+                        fields="queue_time,STARTTIME,CREATIONTIME",
                         size=1000)
     for document in results['hits']['hits']:
         if 'fields' in document:
+            print document['fields'].keys()
             queue_time += int(document['fields']['queue_time'][0])
             calculated_queue_time += (int(document['fields']['STARTTIME'][0]) -
                                       int(document['fields']['CREATIONTIME'][0]))
@@ -111,6 +111,6 @@ if __name__ == "__main__":
     args = parser.parse_args(sys.argv[1:])
     args.start_date = parse_date(args.start_date)
     args.end_date = parse_date(args.end_date)
-    es = pyelasticsearch.ElasticSearch(ES_MASTER)
+    es = elasticsearch.Elasticsearch(ES_MASTER)
     get_average_queue_times(args.start_date, args.end_date, es)
 
