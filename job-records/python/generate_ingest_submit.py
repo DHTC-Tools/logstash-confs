@@ -108,7 +108,6 @@ def create_weekly_submission(start_date, end_date, work_directory,
     current_date = start_date
     date_string = current_date.isoformat().replace('-', '')
     current_week = current_date.isocalendar()[1]
-    week = current_date.isocalendar()[1]
     while current_date <= end_date:
         current_date += datetime.timedelta(days=1)
         week = current_date.isocalendar()[1]
@@ -116,9 +115,9 @@ def create_weekly_submission(start_date, end_date, work_directory,
             es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                          current_week)
             submit_addition = "arguments = {0} {1} {2} {3}\n".format(data_source,
-                                                                 es_index,
-                                                                 processed,
-                                                                 date_string)
+                                                                     es_index,
+                                                                     processed,
+                                                                     date_string)
             submit_addition += "transfer_input_files = joblog.conf, "
             submit_addition += "process_logs.py, download_logs.py\n"
             submit_addition += "queue 1\n"
@@ -130,17 +129,14 @@ def create_weekly_submission(start_date, end_date, work_directory,
             # need to write out arguments for this submit now
             es_index = "jobsarchived_{0}_{1:0>2}".format(current_date.year,
                                                          current_week)
-            submit_addition = "arguments = {0} {1} {2} {3}\n".format(date_string,
-                                                                 data_source,
-                                                                 processed,
-                                                                 es_index)
+            submit_addition = "arguments = {0} {1} {2} {3}\n".format(data_source,
+                                                                     es_index,
+                                                                     processed,
+                                                                     date_string)
             submit_addition += "transfer_input_files = joblog.conf, "
             submit_addition += "process_logs.py, download_logs.py\n"
             submit_addition += "queue 1\n"
             submission_file += submit_addition
-
-
-
 
     output_filename = "ingest_logs_{0}_{1}.submit".format(start_date.isoformat(),
                                                           end_date.isoformat())
