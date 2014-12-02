@@ -80,7 +80,11 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
             queue_time += int(document['fields']['queue_time'][0])
             start_time = datetime.datetime.strptime(document['fields']['STARTTIME'][0], "%Y-%m-%dT%H:%M:%S+00:00")
             creation_time = datetime.datetime.strptime(document['fields']['CREATIONTIME'][0], "%Y-%m-%dT%H:%M:%S+00:00")
-            calculated_queue_time += (start_time - creation_time).total_seconds()
+            delta = (start_time - creation_time)
+            # total_seconds for timedelta not present before python 2.7
+            calculated_queue_time += (delta.microseconds +
+                                      (delta.seconds +
+                                       delta.days * 24 * 3600) * 10**6) / 10**6
     doc_count = float(results['hits']['total'])
     return queue_time / doc_count, calculated_queue_time / doc_count, doc_count
 
