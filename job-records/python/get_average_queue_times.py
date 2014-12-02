@@ -8,7 +8,7 @@ import logging
 import elasticsearch
 
 
-ES_MASTER = 'http://uct2-es-door.mwt2.org:9200'
+ES_NODES = ['uct2-es-head.mwt2.org:9200', 'uct2-es-door.mwt2.org:9200']
 
 
 def parse_date(date=None):
@@ -72,7 +72,8 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
                                        {"MODIFICATIONTIME":
                                             {"gte": day.isoformat(),
                                              "lte": day.isoformat()}}}},
-                        size=10000,
+                        size=1000,
+                        timeout=600,
                         fields="queue_time,STARTTIME,CREATIONTIME")
     queue_time = 0
     calculated_queue_time = 0
@@ -114,7 +115,7 @@ def get_average_queue_times(start_date, end_date, es=None):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(filename='average.log', level=logging.INFO)
+    logging.basicConfig(filename='average.log', level=logging.DEBUG)
     parser = argparse.ArgumentParser(description='Create a condor submit file for processing job log data.')
     parser.add_argument('--startdate', dest='start_date', default=datetime.date.today().isoformat(),
                         help='Date to start processing logs from')
@@ -123,6 +124,6 @@ if __name__ == "__main__":
     args = parser.parse_args(sys.argv[1:])
     args.start_date = parse_date(args.start_date)
     args.end_date = parse_date(args.end_date)
-    es = elasticsearch.Elasticsearch(ES_MASTER)
+    es = elasticsearch.Elasticsearch(ES_NODES)
     get_average_queue_times(args.start_date, args.end_date, es)
 
