@@ -3,6 +3,7 @@
 import sys
 import datetime
 import argparse
+import logging
 
 import elasticsearch
 
@@ -80,7 +81,7 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
             if ('queue_time' not in document['fields'] or
                         'STARTTIME' not in document['fields'] or
                         'CREATIONTIME' not in document['fields']):
-                print document
+                logging.warning("Invalid document: {0}".format(str(document)))
                 continue
             queue_time += int(document['fields']['queue_time'][0])
             start_time = datetime.datetime.strptime(document['fields']['STARTTIME'][0], "%Y-%m-%dT%H:%M:%S+00:00")
@@ -113,6 +114,7 @@ def get_average_queue_times(start_date, end_date, es=None):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(filename='average.log', level=logging.INFO)
     parser = argparse.ArgumentParser(description='Create a condor submit file for processing job log data.')
     parser.add_argument('--startdate', dest='start_date', default=datetime.date.today().isoformat(),
                         help='Date to start processing logs from')
