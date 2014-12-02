@@ -9,6 +9,7 @@ import elasticsearch
 
 ES_MASTER = 'http://uct2-es-head.mwt2.org:9200'
 
+
 def parse_date(date=None):
     """
     Parse a string in YYYY-MM-DD format into a datetime.date object.
@@ -60,8 +61,6 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
     if es is None:
         return None, None, None
 
-    queue_time = 0
-    calculated_queue_time = 0
     week = day.isocalendar()[1]
     # want to get the week before and after since
     index = 'jobsarchived_2014_{0}'.format(week - 1)
@@ -69,18 +68,17 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
     results = es.search(index=index,
                         body={"filter":
                                   {"range":
-                                        {"MODIFICATIONTIME":
-                                             {"gte": day.isoformat(),
-                                              "lte": day.isoformat()}}}},
-                        fields="queue_time,STARTTIME,CREATIONTIME",
-                        size=1000)
+                                       {"MODIFICATIONTIME":
+                                            {"gte": day.isoformat(),
+                                             "lte": day.isoformat()}}}},
+                        fields="queue_time,STARTTIME,CREATIONTIME")
     queue_time = 0
     calculated_queue_time = 0
     for document in results['hits']['hits']:
         if 'fields' in document:
             if ('queue_time' not in document['fields'] or
-                'STARTTIME' not in document['fields'] or
-                'CREATIONTIME' not in document['fields']):
+                        'STARTTIME' not in document['fields'] or
+                        'CREATIONTIME' not in document['fields']):
                 print document
                 continue
             queue_time += int(document['fields']['queue_time'][0])
@@ -90,9 +88,10 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
             # total_seconds for timedelta not present before python 2.7
             calculated_queue_time += (delta.microseconds +
                                       (delta.seconds +
-                                       delta.days * 24 * 3600) * 10**6) / 10**6
+                                       delta.days * 24 * 3600) * 10 ** 6) / 10 ** 6
     doc_count = float(results['hits']['total'])
     return queue_time / doc_count, calculated_queue_time / doc_count, doc_count
+
 
 def get_average_queue_times(start_date, end_date, es=None):
     """
@@ -111,7 +110,6 @@ def get_average_queue_times(start_date, end_date, es=None):
             sys.stdout.write("{0},{1},{2}\n".format(result))
         current_date += datetime.timedelta(days=1)
 
-    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Create a condor submit file for processing job log data.')
