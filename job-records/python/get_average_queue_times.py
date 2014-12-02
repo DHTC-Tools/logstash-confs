@@ -7,7 +7,7 @@ import argparse
 import elasticsearch
 
 
-ES_MASTER = 'http://uct2-es-head.mwt2.org:9200'
+ES_MASTER = 'http://uct2-es-door.mwt2.org:9200'
 
 
 def parse_date(date=None):
@@ -71,6 +71,7 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
                                        {"MODIFICATIONTIME":
                                             {"gte": day.isoformat(),
                                              "lte": day.isoformat()}}}},
+                        size=10000,
                         fields="queue_time,STARTTIME,CREATIONTIME")
     queue_time = 0
     calculated_queue_time = 0
