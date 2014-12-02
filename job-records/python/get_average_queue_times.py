@@ -66,15 +66,14 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
     # want to get the week before and after since
     index = 'jobsarchived_2014_{0}'.format(week - 1)
     index += ',jobsarchived_2014_{0}'.format(week)
-    results = es.search(index=index,
-                        body={"filter":
-                                  {"range":
-                                       {"MODIFICATIONTIME":
-                                            {"gte": day.isoformat(),
-                                             "lte": day.isoformat()}}}},
-                        size=1000,
-                        timeout=600,
-                        fields="queue_time,STARTTIME,CREATIONTIME")
+    results = elasticsearch.helpers.scroll(es,
+                                           index=index,
+                                           body={"filter":
+                                                     {"range":
+                                                          {"MODIFICATIONTIME":
+                                                               {"gte": day.isoformat(),
+                                                                "lte": day.isoformat()}}}},
+                                           fields="queue_time,STARTTIME,CREATIONTIME")
     queue_time = 0
     calculated_queue_time = 0
     for document in results['hits']['hits']:
