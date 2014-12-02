@@ -6,6 +6,7 @@ import argparse
 import logging
 
 import elasticsearch
+import elasticsearch.helpers
 
 
 ES_NODES = ['uct2-es-head.mwt2.org:9200', 'uct2-es-door.mwt2.org:9200']
