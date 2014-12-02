@@ -78,7 +78,11 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
     calculated_queue_time = 0
     for document in results['hits']['hits']:
         if 'fields' in document:
-            print document['fields'].keys()
+            if ('queue_time' not in document['fields'] or
+                'STARTTIME' not in document['fields'] or
+                'CREATIONTIME' not in document['fields']):
+                print document
+                continue
             queue_time += int(document['fields']['queue_time'][0])
             start_time = datetime.datetime.strptime(document['fields']['STARTTIME'][0], "%Y-%m-%dT%H:%M:%S+00:00")
             creation_time = datetime.datetime.strptime(document['fields']['CREATIONTIME'][0], "%Y-%m-%dT%H:%M:%S+00:00")
