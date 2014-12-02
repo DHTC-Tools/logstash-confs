@@ -74,6 +74,8 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
                                               "lte": day.isoformat()}}}},
                         fields="queue_time,STARTTIME,CREATIONTIME",
                         size=1000)
+    queue_time = 0
+    calculated_queue_time = 0
     for document in results['hits']['hits']:
         if 'fields' in document:
             print document['fields'].keys()
