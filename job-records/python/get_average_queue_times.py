@@ -108,7 +108,7 @@ def get_average_queue_times(start_date, end_date, es=None):
     while current_date <= end_date:
         result = calculate_average_queue_time(current_date, es)
         if result != (None, None, None):
-            sys.stdout.write("{0},{1},{2}\n".format(result))
+            sys.stdout.write("{0},{1},{2}\n".format(*result))
         current_date += datetime.timedelta(days=1)
 
     
