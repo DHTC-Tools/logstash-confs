@@ -2,8 +2,10 @@
 
 import sys
 import datetime
+import time
 import argparse
 import logging
+import csv
 
 import elasticsearch
 import elasticsearch.helpers
@@ -67,33 +69,43 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
     # want to get the week before and after since
     index = 'jobsarchived_2014_{0}'.format(week - 1)
     index += ',jobsarchived_2014_{0}'.format(week)
-    results = elasticsearch.helpers.scroll(es,
-                                           index=index,
-                                           body={"filter":
-                                                     {"range":
-                                                          {"MODIFICATIONTIME":
-                                                               {"gte": day.isoformat(),
-                                                                "lte": day.isoformat()}}}},
-                                           fields="queue_time,STARTTIME,CREATIONTIME")
-    queue_time = 0
-    calculated_queue_time = 0
-    for document in results['hits']['hits']:
-        if 'fields' in document:
-            if ('queue_time' not in document['fields'] or
-                        'STARTTIME' not in document['fields'] or
-                        'CREATIONTIME' not in document['fields']):
-                logging.warning("Invalid document: {0}".format(str(document)))
-                continue
-            queue_time += int(document['fields']['queue_time'][0])
-            start_time = datetime.datetime.strptime(document['fields']['STARTTIME'][0], "%Y-%m-%dT%H:%M:%S+00:00")
-            creation_time = datetime.datetime.strptime(document['fields']['CREATIONTIME'][0], "%Y-%m-%dT%H:%M:%S+00:00")
-            delta = (start_time - creation_time)
-            # total_seconds for timedelta not present before python 2.7
-            calculated_queue_time += (delta.microseconds +
-                                      (delta.seconds +
-                                       delta.days * 24 * 3600) * 10 ** 6) / 10 ** 6
-    doc_count = float(results['hits']['total'])
-    return queue_time / doc_count, calculated_queue_time / doc_count, doc_count
+    #index = 'jobrecord_test'
+    start_time = datetime.datetime.combine(day, datetime.time(0, 0, 0))
+    start_time = time.mktime(start_time.timetuple()) * 1000 # ES uses milliseconds from epoch
+    end_day = day + datetime.timedelta(days=1)
+    end_time = datetime.datetime.combine(end_day, datetime.time(0, 0, 0))
+    end_time = time.mktime(end_time.timetuple()) * 1000 # ES uses milliseconds from epoch
+    results = es.search(body=
+                                          {"query": {
+                                                    "filtered" : {
+                                                        "filter": {
+                                                            "bool": {
+                                                                "must": [
+                                                                    {"range":
+                                                                        {"MODIFICATIONTIME":
+                                                                            {"gte": start_time,
+                                                                             "lt": end_time}}},
+                                                                        {"exists" : { "field": "CREATIONTIME" } },
+                                                                        {"exists" : { "field": "STARTTIME" } },
+                                                                        {"exists" : { "field": "queue_time" } }]}}}},
+
+                                                "aggs":  {
+                                                    "queue_avg": 
+                                                        { "avg": 
+                                                            {"field": "queue_time"}},
+                                                    "script_avg":
+                                                        {"avg":
+                                                            {"script": "doc['STARTTIME'].value - doc['CREATIONTIME'].value"}}}},
+                        size=0,
+                        index=index)
+    doc_count = results['hits']['total']
+    queue_time = results['aggregations']['queue_avg']["value"]
+    script_time = results['aggregations']['script_avg']["value"] / 1000
+            
+    if doc_count == 0:
+        logging.warn("No documents for {0}".format(day.isoformat()))
+        return 0, 0, 0
+    return queue_time, script_time, doc_count
 
 
 def get_average_queue_times(start_date, end_date, es=None):
@@ -107,15 +119,21 @@ def get_average_queue_times(start_date, end_date, es=None):
     if es is None:
         return
     current_date = start_date
+    output_file = open('averages.csv', 'w')
+    writer = csv.writer(output_file)
+    writer.writerow(['Date', 'queue_time average', 'STARTTIME - CREATIONTIME average', 'documents'])
     while current_date <= end_date:
         result = calculate_average_queue_time(current_date, es)
         if result != (None, None, None):
-            sys.stdout.write("{0},{1},{2}\n".format(*result))
+            sys.stdout.write("{0},{1},{2},{3}\n".format(current_date.isoformat(),*result))
+            logging.info("{0},{1},{2},{3}\n".format(current_date.isoformat(),*result))
+            writer.writerow([current_date.isoformat()] + list(result))
         current_date += datetime.timedelta(days=1)
+    output_file.close()
 
 
 if __name__ == "__main__":
-    logging.basicConfig(filename='average.log', level=logging.DEBUG)
+    logging.basicConfig(filename='average.log', level=logging.WARN)
     parser = argparse.ArgumentParser(description='Create a condor submit file for processing job log data.')
     parser.add_argument('--startdate', dest='start_date', default=datetime.date.today().isoformat(),
                         help='Date to start processing logs from')
