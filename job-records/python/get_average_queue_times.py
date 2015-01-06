@@ -79,19 +79,19 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
     end_time = time.mktime(end_time.timetuple()) * 1000  # ES uses milliseconds from epoch
     results = es.search(body=
                         {"query": {
-                            "filtered" : {
+                            "filtered": {
                                 "filter": {
                                     "bool": {
                                         "must": [
                                             {"range":
                                                  {"MODIFICATIONTIME":
                                                       {"gte": start_time,
-                                                       "lt": end_time}}},
+                                                       "lte": end_time}}},
                                             {"exists": {"field": "CREATIONTIME"}},
                                             {"exists": {"field": "STARTTIME"}},
                                             {"exists": {"field": "queue_time"}}]}}}},
-
-                         "aggs":  {
+                         "size": 0,
+                         "aggs": {
                              "queue_avg":
                                  {"avg":
                                        {"field": "queue_time"}},
