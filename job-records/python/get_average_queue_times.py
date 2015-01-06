@@ -6,13 +6,14 @@ import time
 import argparse
 import logging
 import csv
+import pytz
 
 import elasticsearch
 import elasticsearch.helpers
 
 
 ES_NODES = ['uct2-es-head.mwt2.org:9200', 'uct2-es-door.mwt2.org:9200']
-
+TZ_NAME = "UTC"
 
 def parse_date(date=None):
     """
@@ -70,32 +71,33 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
     index = 'jobsarchived_2014_{0}'.format(week - 1)
     index += ',jobsarchived_2014_{0}'.format(week)
     #index = 'jobrecord_test'
-    start_time = datetime.datetime.combine(day, datetime.time(0, 0, 0))
-    start_time = time.mktime(start_time.timetuple()) * 1000 # ES uses milliseconds from epoch
+    utc = pytz.utc
+    start_time = utc.localize(datetime.datetime.combine(day, datetime.time(0, 0, 0)))
+    start_time = time.mktime(start_time.timetuple()) * 1000  # ES uses milliseconds from epoch
     end_day = day + datetime.timedelta(days=1)
-    end_time = datetime.datetime.combine(end_day, datetime.time(0, 0, 0))
-    end_time = time.mktime(end_time.timetuple()) * 1000 # ES uses milliseconds from epoch
+    end_time = utc.localize(datetime.datetime.combine(end_day, datetime.time(0, 0, 0)))
+    end_time = time.mktime(end_time.timetuple()) * 1000  # ES uses milliseconds from epoch
     results = es.search(body=
-                                          {"query": {
-                                                    "filtered" : {
-                                                        "filter": {
-                                                            "bool": {
-                                                                "must": [
-                                                                    {"range":
-                                                                        {"MODIFICATIONTIME":
-                                                                            {"gte": start_time,
-                                                                             "lt": end_time}}},
-                                                                        {"exists" : { "field": "CREATIONTIME" } },
-                                                                        {"exists" : { "field": "STARTTIME" } },
-                                                                        {"exists" : { "field": "queue_time" } }]}}}},
+                        {"query": {
+                            "filtered" : {
+                                "filter": {
+                                    "bool": {
+                                        "must": [
+                                            {"range":
+                                                 {"MODIFICATIONTIME":
+                                                      {"gte": start_time,
+                                                       "lt": end_time}}},
+                                            {"exists": {"field": "CREATIONTIME"}},
+                                            {"exists": {"field": "STARTTIME"}},
+                                            {"exists": {"field": "queue_time"}}]}}}},
 
-                                                "aggs":  {
-                                                    "queue_avg": 
-                                                        { "avg": 
-                                                            {"field": "queue_time"}},
-                                                    "script_avg":
-                                                        {"avg":
-                                                            {"script": "doc['STARTTIME'].value - doc['CREATIONTIME'].value"}}}},
+                         "aggs":  {
+                             "queue_avg":
+                                 {"avg":
+                                       {"field": "queue_time"}},
+                             "script_avg":
+                                 {"avg":
+                                       {"script": "doc['STARTTIME'].value - doc['CREATIONTIME'].value"}}}},
                         size=0,
                         index=index)
     doc_count = results['hits']['total']
