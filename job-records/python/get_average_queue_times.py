@@ -70,13 +70,10 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
     # want to get the week before and after since
     index = 'jobsarchived_2014_{0}'.format(week - 1)
     index += ',jobsarchived_2014_{0}'.format(week)
-    #index = 'jobrecord_test'
     utc = pytz.utc
     start_time = utc.localize(datetime.datetime.combine(day, datetime.time(0, 0, 0)))
-    start_time = time.mktime(start_time.timetuple()) * 1000L  # ES uses milliseconds from epoch
     end_day = day + datetime.timedelta(days=1)
     end_time = utc.localize(datetime.datetime.combine(end_day, datetime.time(0, 0, 0)))
-    end_time = time.mktime(end_time.timetuple()) * 1000L  # ES uses milliseconds from epoch
     results = es.search(body=
                         {"query": {
                             "filtered": {
