@@ -83,7 +83,7 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
                                             {"range":
                                                  {"MODIFICATIONTIME":
                                                       {"gte": start_time,
-                                                       "lte": end_time}}},
+                                                       "lt": end_time}}},
                                             {"exists": {"field": "CREATIONTIME"}},
                                             {"exists": {"field": "STARTTIME"}},
                                             {"exists": {"field": "queue_time"}}]}}}},
@@ -98,8 +98,12 @@ def calculate_average_queue_time(day=datetime.date.today(), es=None):
                         size=0,
                         index=index)
     doc_count = results['hits']['total']
-    queue_time = results['aggregations']['queue_avg']["value"]
-    script_time = results['aggregations']['script_avg']["value"] / 1000
+    if doc_count == 0:
+        queue_time = 'NA'
+        script_time = 'NA'
+    else:
+        queue_time = results['aggregations']['queue_avg']["value"]
+        script_time = results['aggregations']['script_avg']["value"] / 1000
             
     if doc_count == 0:
         logging.warn("No documents for {0}".format(day.isoformat()))
