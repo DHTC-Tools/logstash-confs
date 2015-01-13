@@ -44,7 +44,7 @@
             "analyzer" : "whitespace"
           },
           "DDMERRORDIAG" : {
-            "type" : "string",
+            "type" : "string"
           },
           "DESTINATIONDBLOCK" : {
             "type" : "string",
@@ -59,7 +59,7 @@
             "analyzer" : "whitespace"
           },
           "EXEERRORDIAG" : {
-            "type" : "string",
+            "type" : "string"
           },
           "HOMEPACKAGE" : {
             "type" : "string",
@@ -78,7 +78,7 @@
             "analyzer" : "whitespace"
           },
           "JOBDISPATCHERERRORDIAG" : {
-            "type" : "string",
+            "type" : "string"
           },
           "JOBNAME" : {
             "type" : "string",
@@ -105,7 +105,7 @@
             "analyzer" : "whitespace"
           },
           "PILOTERRORDIAG" : {
-            "type" : "string",
+            "type" : "string"
           },
           "PILOTID" : {
             "type" : "string",
@@ -160,7 +160,7 @@
             "analyzer" : "whitespace"
           },
           "TASKBUFFERERRORDIAG" : {
-            "type" : "string",
+            "type" : "string"
           },
           "TRANSFERTYPE" : {
             "type" : "string",
