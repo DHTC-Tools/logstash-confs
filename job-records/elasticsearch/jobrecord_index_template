@@ -1,0 +1,324 @@
+{
+  "template" : "jobsarchived_20*",
+  "mappings" : {
+    "_default_" : {
+        "properties" : {
+          "ATLASRELEASE" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "CLOUD" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "CMTCONFIG" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "COMMANDTOPILOT" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "COMPUTINGELEMENT" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "COMPUTINGSITE" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "COUNTRYGROUP" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "CPUCONSUMPTIONUNIT" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "CPUCONVERSION" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "CREATIONHOST" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "DDMERRORDIAG" : {
+            "type" : "string",
+          },
+          "DESTINATIONDBLOCK" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "DESTINATIONSE" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "DISPATCHDBLOCK" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "EXEERRORDIAG" : {
+            "type" : "string",
+          },
+          "HOMEPACKAGE" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "INPUTFILEPROJECT" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "INPUTFILETYPE" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "IPCONNECTIVITY" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "JOBDISPATCHERERRORDIAG" : {
+            "type" : "string",
+          },
+          "JOBNAME" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "JOBSTATUS" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "LOCKEDBY" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "MAXCPUUNIT" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "MODIFICATIONHOST" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "PARENTID" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "PILOTERRORDIAG" : {
+            "type" : "string",
+          },
+          "PILOTID" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "PILOTTIMING" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "PROCESSINGTYPE" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "PRODDBLOCK" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "PRODSERIESLABEL" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "PRODSOURCELABEL" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "PRODUSERID" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "PRODUSERNAME" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "RELOCATIONFLAG" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "SCHEDULERID" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "SOURCESITE" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "SPECIALHANDLING" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "STATECHANGETIME" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "TASKBUFFERERRORDIAG" : {
+            "type" : "string",
+          },
+          "TRANSFERTYPE" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "TRANSFORMATION" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "VO" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "WORKINGGROUP" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "host" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "message" : {
+            "type" : "string",
+            "analyzer" : "whitespace"
+          },
+          "@timestamp" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          },
+          "ASSIGNEDPRIORITY" : {
+            "type" : "long"
+          },
+          "ATTEMPTNR" : {
+            "type" : "long"
+          },
+          "BROKERAGEERRORCODE" : {
+            "type" : "long"
+          },
+          "CORECOUNT" : {
+            "type" : "long"
+          },
+          "CPUCONSUMPTIONTIME" : {
+            "type" : "long"
+          },
+          "CREATIONTIME" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          },
+          "CURRENTPRIORITY" : {
+            "type" : "long"
+          },
+          "DDMERRORCODE" : {
+            "type" : "long"
+          },
+          "ENDTIME" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          },
+          "EXEERRORCODE" : {
+            "type" : "long"
+          },
+          "INPUTFILEBYTES" : {
+            "type" : "long"
+          },
+          "JOBDEFINITIONID" : {
+            "type" : "long"
+          },
+          "JOBDISPATCHERERRORCODE" : {
+            "type" : "long"
+          },
+          "JOBDISPATCHERERRORDIAG" : {
+            "type" : "string"
+          },
+          "JOBEXECUTIONID" : {
+            "type" : "long"
+          },
+          "JOBSETID" : {
+            "type" : "long"
+          },
+          "MAXATTEMPT" : {
+            "type" : "long"
+          },
+          "MAXCPUCOUNT" : {
+            "type" : "long"
+          },
+          "MAXDISKCOUNT" : {
+            "type" : "long"
+          },
+          "MINRAMCOUNT" : {
+            "type" : "long"
+          },
+          "MODIFICATIONTIME" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          },
+          "NEVENTS" : {
+            "type" : "long"
+          },
+          "NINPUTDATAFILES" : {
+            "type" : "long"
+          },
+          "NOUTPUTDATAFILES" : {
+            "type" : "long"
+          },
+          "OUTPUTFILEBYTES" : {
+            "type" : "long"
+          },
+          "PANDAID" : {
+            "type" : "long"
+          },
+          "PILOTERRORCODE" : {
+            "type" : "long"
+          },
+          "PRODDBUPDATETIME" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          },
+          "STARTTIME" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          },
+          "SUPERRORCODE" : {
+            "type" : "long"
+          },
+          "TASKBUFFERERRORCODE" : {
+            "type" : "long"
+          },
+          "TASKID" : {
+            "type" : "long"
+          },
+          "TRANSEXITCODE" : {
+            "type" : "long"
+          },
+          "get_job_consumption" : {
+            "type" : "long"
+          },
+          "job_duration" : {
+            "type" : "long"
+          },
+          "job_efficiency" : {
+            "type" : "double"
+          },
+          "payload_consumption" : {
+            "type" : "long"
+          },
+          "queue_time" : {
+            "type" : "long"
+          },
+          "setup_consumption" : {
+            "type" : "long"
+          },
+          "stage_in_consumption" : {
+            "type" : "long"
+          },
+          "stage_out_consumption" : {
+            "type" : "long"
+          }
+        }
+      }
+    }
+}
