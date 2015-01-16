@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""
+Read dcache log files from ./logs directory and write out processed logs to ./processed_logs directory, expects
+year for logs as first
+"""
 
 import os
 import re
@@ -24,12 +28,12 @@ for logfile in os.listdir('./logs'):
             continue
         time = field_match.group(1).split(':')
         # datetime(year, month, day, hour, minute, sec)
-        timestamp =  timezone.localize(datetime.datetime(int(date[0]),
-                                                         int(date[1]),
-                                                         int(date[2]),
-                                                         int(time[0]),
-                                                         int(time[1]),
-                                                         int(time[2])))
+        timestamp = timezone.localize(datetime.datetime(int(date[0]),
+                                                        int(date[1]),
+                                                        int(date[2]),
+                                                        int(time[0]),
+                                                        int(time[1]),
+                                                        int(time[2])))
         output.write("{0} {1} {2} {3} {4}\n".format(timestamp.isoformat(),
                                                     field_match.group(2),
                                                     field_match.group(3),

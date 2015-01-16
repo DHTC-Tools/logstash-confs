@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""
+Read dcache log files from stdin and write out processed logs files, needs the year for the log files as the first
+argument
+"""
 
 import sys
 import os
@@ -21,12 +25,12 @@ for line in sys.stdin.readlines():
     date = field_match.group(1).split('.')
     time = field_match.group(2).split(':')
     # datetime(year, month, day, hour, minute, sec)
-    timestamp =  timezone.localize(datetime.datetime(int(year),
-                                                     int(date[0]),
-                                                     int(date[1]),
-                                                     int(time[0]),
-                                                     int(time[1]),
-                                                     int(time[2])))
+    timestamp = timezone.localize(datetime.datetime(int(year),
+                                                    int(date[0]),
+                                                    int(date[1]),
+                                                    int(time[0]),
+                                                    int(time[1]),
+                                                    int(time[2])))
     sys.stdout.write("{0} {1} {2} {3} {4}\n".format(timestamp.astimezone(utc_tz).isoformat(),
                                                     field_match.group(3),
                                                     field_match.group(4),
