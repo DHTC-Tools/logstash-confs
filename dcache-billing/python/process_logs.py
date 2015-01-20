@@ -11,8 +11,10 @@ import pytz
 
 TZ_NAME = 'US/Central'
 
-date_re = re.compile(r'summary-(\d{4}.\d{2}.\d{2})')
-billing_re = re.compile(r'\d{2}.\d{2}\s+(\d{2}:\d{2}:\d{2})\s+(.*)\s+(\d+)\s+((?:-)?\d+)\s+(\d+)')
+# looking for billing-YYYY.MM.DD
+date_re = re.compile(r'billing-(\d{4}.\d{2}.\d{2})')
+# looking for MM.DD HH:MM:SS ...   the rest of the line is variable depending on message type
+billing_re = re.compile(r'\d{2}.\d{2}\s+(\d{2}:\d{2}:\d{2})\s+(.*)')
 timezone = pytz.timezone(TZ_NAME)
 for logfile in os.listdir('./logs'):
     output = open('./processed_logs/{0}'.format(logfile), 'w')
@@ -34,8 +36,5 @@ for logfile in os.listdir('./logs'):
                                                         int(time[0]),
                                                         int(time[1]),
                                                         int(time[2])))
-        output.write("{0} {1} {2} {3} {4}\n".format(timestamp.isoformat(),
-                                                    field_match.group(2),
-                                                    field_match.group(3),
-                                                    field_match.group(4),
-                                                    field_match.group(5)))
+        output.write("{0} {1}\n".format(timestamp.isoformat(),
+                                        field_match.group(2)))
