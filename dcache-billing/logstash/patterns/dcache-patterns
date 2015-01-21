@@ -1,1 +1,2 @@
 CELLNAME [a-zA-Z0-9\-_@<>]+
+STORAGE_CLASS [a-zA-Z0-9@]+
