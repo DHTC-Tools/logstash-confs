@@ -1,2 +1,4 @@
-CELLNAME [a-zA-Z0-9\-_@<>]+
-STORAGE_CLASS [a-zA-Z0-9@]+
+CELLNAME    [a-zA-Z0-9\-_@<>]+
+DCACHE_PATH [/a-zA-Z0-9@]+
+PROTOCOL    [A-Za-z0-9.\-:]+
+INITIATOR   [a-zA-Z0-9\-_@<>]+
