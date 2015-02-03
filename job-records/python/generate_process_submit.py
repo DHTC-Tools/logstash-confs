@@ -106,6 +106,8 @@ def main():
     args = parser.parse_args(sys.argv[1:])
     if args.location is None:
         args.location = tempfile.mkdtemp()
+    elif not os.path.exists(args.location):
+        os.mkdir(args.location, 0o700)
     elif os.path.exists(args.location):
         overwrite = raw_input("{0} exists, overwrite? ".format(args.location))
         if overwrite.lower().strip() != 'y':
