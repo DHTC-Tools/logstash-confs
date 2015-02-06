@@ -191,132 +191,172 @@
             "format" : "dateOptionalTime"
           },
           "ASSIGNEDPRIORITY" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "ATTEMPTNR" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "BROKERAGEERRORCODE" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "CORECOUNT" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "CPUCONSUMPTIONTIME" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "CREATIONTIME" : {
             "type" : "date",
-            "format" : "dateOptionalTime"
+            "format" : "dateOptionalTime",
+            "doc_values": true
           },
           "CURRENTPRIORITY" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "DDMERRORCODE" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "ENDTIME" : {
             "type" : "date",
-            "format" : "dateOptionalTime"
+            "format" : "dateOptionalTime",
+            "doc_values": true
           },
           "EXEERRORCODE" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "INPUTFILEBYTES" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "JOBDEFINITIONID" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "JOBDISPATCHERERRORCODE" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "JOBDISPATCHERERRORDIAG" : {
             "type" : "string"
           },
           "JOBEXECUTIONID" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "JOBSETID" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "MAXATTEMPT" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "MAXCPUCOUNT" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "MAXDISKCOUNT" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "MINRAMCOUNT" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "MODIFICATIONTIME" : {
             "type" : "date",
-            "format" : "dateOptionalTime"
+            "format" : "dateOptionalTime",
+            "doc_values": true
           },
           "NEVENTS" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "NINPUTDATAFILES" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "NOUTPUTDATAFILES" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "OUTPUTFILEBYTES" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "PANDAID" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "PILOTERRORCODE" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "PRODDBUPDATETIME" : {
             "type" : "date",
-            "format" : "dateOptionalTime"
+            "format" : "dateOptionalTime",
+            "doc_values": true
           },
           "STARTTIME" : {
             "type" : "date",
-            "format" : "dateOptionalTime"
+            "format" : "dateOptionalTime",
+            "doc_values": true
           },
           "SUPERRORCODE" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "TASKBUFFERERRORCODE" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "TASKID" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "TRANSEXITCODE" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "get_job_consumption" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "job_duration" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "job_efficiency" : {
-            "type" : "double"
+            "type" : "double",
+            "doc_values": true
           },
           "payload_consumption" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "queue_time" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "setup_consumption" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "stage_in_consumption" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           },
           "stage_out_consumption" : {
-            "type" : "long"
+            "type" : "long",
+            "doc_values": true
           }
         }
       }
