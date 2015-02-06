@@ -1,190 +1,201 @@
 {
   "template" : "jobsarchived_20*",
+  "settings" : {
+    "analysis" : {
+      "analyzer": {
+        "lowercase_whitespace": {
+          "type": "custom",
+          "tokenizer":  "whitespace",
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
   "mappings" : {
     "_default_" : {
         "properties" : {
           "ATLASRELEASE" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "CLOUD" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "CMTCONFIG" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "COMMANDTOPILOT" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "COMPUTINGELEMENT" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "COMPUTINGSITE" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "COUNTRYGROUP" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "CPUCONSUMPTIONUNIT" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "CPUCONVERSION" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "CREATIONHOST" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "DDMERRORDIAG" : {
             "type" : "string"
           },
           "DESTINATIONDBLOCK" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "DESTINATIONSE" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "DISPATCHDBLOCK" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "EXEERRORDIAG" : {
             "type" : "string"
           },
           "HOMEPACKAGE" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "INPUTFILEPROJECT" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "INPUTFILETYPE" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "IPCONNECTIVITY" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "JOBDISPATCHERERRORDIAG" : {
             "type" : "string"
           },
           "JOBNAME" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "JOBSTATUS" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "LOCKEDBY" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "MAXCPUUNIT" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "MODIFICATIONHOST" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "PARENTID" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "PILOTERRORDIAG" : {
             "type" : "string"
           },
           "PILOTID" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "PILOTTIMING" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "PROCESSINGTYPE" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "PRODDBLOCK" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "PRODSERIESLABEL" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "PRODSOURCELABEL" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "PRODUSERID" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "PRODUSERNAME" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "RELOCATIONFLAG" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "SCHEDULERID" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "SOURCESITE" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "SPECIALHANDLING" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "STATECHANGETIME" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "TASKBUFFERERRORDIAG" : {
             "type" : "string"
           },
           "TRANSFERTYPE" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "TRANSFORMATION" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "VO" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "WORKINGGROUP" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "host" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "message" : {
             "type" : "string",
-            "analyzer" : "whitespace"
+            "analyzer" : "lowercase_whitespace"
           },
           "@timestamp" : {
             "type" : "date",
