@@ -1,8 +1,9 @@
 CELLNAME    [a-zA-Z0-9\-_@<>]+
 MESSAGE_TYPE (?:transfer|restore|store|remove|request)
-DCACHE_PATH \[%{UNIXPATH}|Unknown\]
+DC_PATH (%{UNIXPATH}|Unknown)
+DCACHE_PATH \[%{DC_PATH:path}]
 PNFSID (?:[A-F0-9]{36)|(?:[A-F0-9]{24})
-REQUESTINFO \["%{DATA:request_dn}":%{NONNEGINT:uid:int}:%{NONNEGINT:gid:int}:{%{IP:client}}|unknown\]
+REQUESTINFO \["%{DATA:request_dn}":%{NONNEGINT:uid:int}:%{NONNEGINT:gid:int}:(%{IP:client}|unknown)\]
 PROTOCOL    [A-Za-z0-9.\-:]+
 INITIATOR   [a-zA-Z0-9\-_@<>]+
 
@@ -10,4 +11,5 @@ CELL_FRAGMENT \[%{WORD:cell_type}:%{CELLNAME:cell_name}:%{MESSAGE_TYPE:request_t
 PNFS_FRAGMENT \[%{PNFSID:pnfs_id},%{INT:filesize:int}\]
 STORAGE_FRAGMENT %{WORD:storage_name}:%{WORD:storage_group}@%{WORD:storage_type}
 RESULT_FRAGMENT \{%{INT:result_code:int}:%{QS:message}\}
-
+PROTOCOL_FRAGMENT \{%{PROTOCOL:protocol}\s+%{IP:client}\s+%{NONNEGINT:port:int}\}
+INITIATOR_FRAGMENT \[%{INITIATOR:initiator_type}:%{DATA:initiator}\]
