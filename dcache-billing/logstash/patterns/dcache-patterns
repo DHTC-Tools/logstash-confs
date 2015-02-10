@@ -1,4 +1,13 @@
 CELLNAME    [a-zA-Z0-9\-_@<>]+
-DCACHE_PATH [/a-zA-Z0-9.@]+
+MESSAGE_TYPE (?:transfer|restore|store|remove|request)
+DCACHE_PATH \[%{UNIXPATH}|Unknown\]
+PNFSID (?:[A-F0-9]{36)|(?:[A-F0-9]{24})
+REQUESTINFO \["%{DATA:request_dn}":%{NONNEGINT:uid:int}:%{NONNEGINT:gid:int}:{%{IP:client}}|unknown\]
 PROTOCOL    [A-Za-z0-9.\-:]+
 INITIATOR   [a-zA-Z0-9\-_@<>]+
+
+CELL_FRAGMENT \[%{WORD:cell_type}:%{CELLNAME:cell_name}:%{MESSAGE_TYPE:request_type}\]
+PNFS_FRAGMENT \[%{PNFSID:pnfs_id},%{INT:filesize:int}\]
+STORAGE_FRAGMENT %{WORD:storage_name}:%{WORD:storage_group}@%{WORD:storage_type}
+RESULT_FRAGMENT \{%{INT:result_code:int}:%{QS:message}\}
+
