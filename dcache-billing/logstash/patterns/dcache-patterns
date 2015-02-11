@@ -2,7 +2,7 @@ CELLNAME    [a-zA-Z0-9\-_@<>]+
 MESSAGE_TYPE (?:transfer|restore|store|remove|request|warning)
 DC_PATH (%{UNIXPATH}|Unknown)
 DCACHE_PATH \[%{DC_PATH:path}]
-PNFSID (?:[A-F0-9]{36)|(?:[A-F0-9]{24})
+PNFSID [A-F0-9]*
 REQUESTINFO \["%{DATA:request_dn}":%{INT:uid:int}:%{INT:gid:int}:(%{IP:client}|unknown)\]
 PROTOCOL    [A-Za-z0-9.\-:]+
 INITIATOR   [a-zA-Z0-9\-_@<>]+
