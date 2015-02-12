@@ -64,7 +64,15 @@
             "type" : "long",
             "doc_values": true
           },
-          "Site" : {
+          "QueueTime" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "Resource" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "SubmitHost" : {
             "type" : "string",
             "analyzer" : "lowercase_whitespace"
           },

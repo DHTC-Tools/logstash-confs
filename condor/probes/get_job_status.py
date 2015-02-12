@@ -31,10 +31,13 @@ JOB_ATTRS = ['ProcId',
              'RemoteWallClockTime',
              'RemoteSysCpu',
              'RemoteUserCpu',
+             'MATCH_EXP_JOBGLIDEIN_ResourceName',
              'CumulativeSuspensionTime']
 TZ_NAME = 'US/Central'
+ES_HOST = 'uct2-es-door.mwt2.org'
 
-def query_scheduler(client = None):
+
+def query_scheduler(client=None):
     """
     Query a condor schedd instance and then update elastic search db with
     info obtained
@@ -45,7 +48,7 @@ def query_scheduler(client = None):
     jobs = schedd.query("True", JOB_ATTRS)
     user_job_status = {}
     timezone = pytz.timezone(TZ_NAME)
-    current_time =  timezone.localize(datetime.datetime.now())
+    current_time = timezone.localize(datetime.datetime.now())
     job_records = []
     for job in jobs:
         status = JOB_STATUS[job['JobStatus']]
@@ -61,24 +64,36 @@ def query_scheduler(client = None):
                 # a lot of attributes will be missing if job is not running
                 pass
         job_record['JobStatus'] = status
-        job_record['timestamp'] = current_time.isoformat()
+        job_record['@timestamp'] = current_time.isoformat()
         if status == 'Idle':
             queue_time = datetime.datetime.fromtimestamp(job_record['QDate'])
             queue_wait = current_time - timezone.localize(queue_time)
             job_record['QueueTime'] = queue_wait.seconds
+        if 'MATCH_EXP_JOBGLIDEIN_ResourceName' in job_record:
+            job_record['Resource'] = job_record['MATCH_EXP_JOBGLIDEIN_ResourceName']
+            if job_record['Resource'] == "uc3-mon.mwt2.org":
+                job_record['Resource'] = 'UC3'
+            del job_record['MATCH_EXP_JOBGLIDEIN_ResourceName']
+        (user, submit_host) = job_record['User'].split('@')
+        job_record['User'] = user
+        job_record['SubmitHost'] = submit_host
+        if 'host' not in user_job_status:
+            user_job_status['host'] = submit_host
         job_records.append(job_record)
     save_job_records(client, job_records)
-    user_job_status['timestamp'] = current_time.isoformat()
+    user_job_status['@timestamp'] = current_time.isoformat()
     save_collector_status(client, user_job_status)
 
-def save_job_records(client = None, records = None):
+
+def save_job_records(client=None, records=None):
     """
     Save a job record to ES
     """
     if client is None or records is None or records == []:
         return
-    results = helpers.bulk(client, records, index='osg-connect-job-details', doc_type='job_record', stats_only=True)
-    #client.index(index='osg-connect-jobs', doc_type='job_record', body=record)
+    helpers.bulk(client, records, index='osg-connect-job-details', doc_type='job_record', stats_only=True)
+    # client.index(index='osg-connect-jobs', doc_type='job_record', body=record)
+
 
 def save_collector_status(client, record):
     """
@@ -87,20 +102,20 @@ def save_collector_status(client, record):
     if client is None or record is None or record == {}:
         return
     record_time = record['timestamp']
-    del record['timestamp']
     for status in record:
-        es_record = {}
-        es_record['jobs'] = record[status]
-        es_record['status'] = status
-        es_record['timestamp'] = record_time
+        es_record = {'jobs': record[status],
+                     'status': status,
+                     'host': record['host'],
+                     '@timestamp': record_time}
         client.index(index='osg-connect-schedd-state', doc_type='schedd_status', body=es_record)
+
 
 def get_es_client():
     """ Instantiate DB client and pass connection back """
 
-    client = elasticsearch.Elasticsearch(host='uct2-es-door.mwt2.org')
+    client = elasticsearch.Elasticsearch(host=ES_HOST)
     return client
 
 if __name__ == '__main__':
-    client = get_es_client()
-    query_scheduler(client)
+    es_client = get_es_client()
+    query_scheduler(es_client)

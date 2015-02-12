@@ -24,6 +24,10 @@
           "status" : {
             "type" : "string"
           },
+          "host" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          }
           "@timestamp" : {
             "type" : "date",
             "format" : "dateOptionalTime"
