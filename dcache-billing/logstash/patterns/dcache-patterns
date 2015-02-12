@@ -1,4 +1,16 @@
 CELLNAME    [a-zA-Z0-9\-_@<>]+
-DCACHE_PATH [/a-zA-Z0-9.@]+
+MESSAGE_TYPE (?:transfer|restore|store|remove|request|warning)
+DC_PATH (%{UNIXPATH}|Unknown)
+DCACHE_PATH \[%{DC_PATH:path}]
+PNFSID [A-F0-9]*
+REQUESTINFO \["%{DATA:request_dn}":%{INT:uid:int}:%{INT:gid:int}:(%{IP:client}|unknown)\]
 PROTOCOL    [A-Za-z0-9.\-:]+
 INITIATOR   [a-zA-Z0-9\-_@<>]+
+
+CELL_FRAGMENT \[%{WORD:cell_type}:%{CELLNAME:cell_name}:%{MESSAGE_TYPE:request_type}\]
+PNFS_FRAGMENT \[%{PNFSID:pnfs_id},%{INT:filesize:int}\]
+STORAGE_FRAGMENT (?:%{WORD:storage_name}:%{WORD:storage_group}@%{WORD:storage_type}|\<Unknown\>)
+RESULT_FRAGMENT \{%{INT:result_code:int}:%{QS:message}\}
+PROTOCOL_FRAGMENT \{((?:%{PROTOCOL:protocol}\s+%{IPORHOST:client}\s+%{NONNEGINT:port:int}(?:[\s:]%{DATA:protocol_payload})?)|(?:%{PROTOCOL:protocol}\s*%{IPORHOST:client}:%{NONNEGINT:port:int}(?:[\s:]%{DATA:protocol_payload})?))\}
+INITIATOR_FRAGMENT \[%{INITIATOR:initiator_type}:%{DATA:initiator}\]
+REMOVE_FRAGMENT Pool=%{DATA:remove_pool};RemoveFiles=%{DATA:remove_files},%{GREEDYDATA:remove_pnfs_ids}
