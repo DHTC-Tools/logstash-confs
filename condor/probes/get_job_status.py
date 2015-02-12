@@ -50,6 +50,7 @@ def query_scheduler(client=None):
     timezone = pytz.timezone(TZ_NAME)
     current_time = timezone.localize(datetime.datetime.now())
     job_records = []
+    current_host = None
     for job in jobs:
         status = JOB_STATUS[job['JobStatus']]
         if status in user_job_status:
@@ -77,12 +78,11 @@ def query_scheduler(client=None):
         (user, submit_host) = job_record['User'].split('@')
         job_record['User'] = user
         job_record['SubmitHost'] = submit_host
-        if 'host' not in user_job_status:
-            user_job_status['host'] = submit_host
+        if current_host is not None:
+            current_host = submit_host
         job_records.append(job_record)
     save_job_records(client, job_records)
-    user_job_status['@timestamp'] = current_time.isoformat()
-    save_collector_status(client, user_job_status)
+    save_collector_status(client, user_job_status, current_host, current_time.isoformat())
 
 
 def save_job_records(client=None, records=None):
@@ -95,18 +95,18 @@ def save_job_records(client=None, records=None):
     # client.index(index='osg-connect-jobs', doc_type='job_record', body=record)
 
 
-def save_collector_status(client, record):
+def save_collector_status(client, record, host, time):
     """
     Save collector status to ES
     """
     if client is None or record is None or record == {}:
         return
-    record_time = record['@timestamp']
     for status in record:
+
         es_record = {'jobs': record[status],
                      'status': status,
-                     'host': record['host'],
-                     '@timestamp': record_time}
+                     'host': host,
+                     '@timestamp': time}
         client.index(index='osg-connect-schedd-state', doc_type='schedd_status', body=es_record)
 
 
