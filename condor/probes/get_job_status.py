@@ -78,7 +78,7 @@ def query_scheduler(client=None):
         (user, submit_host) = job_record['User'].split('@')
         job_record['User'] = user
         job_record['SubmitHost'] = submit_host
-        if current_host is not None:
+        if current_host is None:
             current_host = submit_host
         job_records.append(job_record)
     save_job_records(client, job_records)
