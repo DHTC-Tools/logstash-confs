@@ -1,0 +1,78 @@
+{
+  "template" : "osg-connect-job-details",
+  "settings" : {
+    "analysis" : {
+      "analyzer": {
+        "lowercase_whitespace": {
+          "type": "custom",
+          "tokenizer":  "whitespace",
+          "filter": ["lowercase"]
+        }
+      }
+    },
+    "index" : {
+        "number_of_replicas" : 0
+    }
+  },
+  "mappings" : {
+    "_default_" : {
+        "properties" : {
+          "ProcId" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "ClusterId" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "JobStatus" : {
+            "type" : "string"
+          },
+          "User" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "ProjectName" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "QDate" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "JobStartDate" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "CommittedTime" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "RemoteWallClockTime" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "RemoteSysCpu" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "RemoteUserCpu" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "CumulativeSuspensionTime" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "Site" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "@timestamp" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          }
+        }
+      }
+    }
+}

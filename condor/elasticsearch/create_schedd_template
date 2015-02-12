@@ -1,0 +1,34 @@
+{
+  "template" : "osg-connect-schedd-state",
+  "settings" : {
+    "analysis" : {
+      "analyzer": {
+        "lowercase_whitespace": {
+          "type": "custom",
+          "tokenizer":  "whitespace",
+          "filter": ["lowercase"]
+        }
+      }
+    },
+    "index" : {
+        "number_of_replicas" : 0
+    }
+  },
+  "mappings" : {
+    "_default_" : {
+        "properties" : {
+          "jobs" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "@timestamp" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          }
+        }
+      }
+    }
+}
