@@ -101,7 +101,7 @@ def save_collector_status(client, record):
     """
     if client is None or record is None or record == {}:
         return
-    record_time = record['timestamp']
+    record_time = record['@timestamp']
     for status in record:
         es_record = {'jobs': record[status],
                      'status': status,
