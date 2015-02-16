@@ -12,7 +12,7 @@ import pytz
 TZ_NAME = 'US/Central'
 
 # looking for billing-YYYY.MM.DD
-date_re = re.compile(r'billing-(\d{4}.\d{2}.\d{2})')
+date_re = re.compile(r'billing-(?:error-)?(\d{4}.\d{2}.\d{2})')
 # looking for MM.DD HH:MM:SS ...   the rest of the line is variable depending on message type
 billing_re = re.compile(r'\d{2}.\d{2}\s+(\d{2}:\d{2}:\d{2})\s+(.*)')
 timezone = pytz.timezone(TZ_NAME)
