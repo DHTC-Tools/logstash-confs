@@ -23,7 +23,16 @@ for logfile in os.listdir('./logs'):
         print "Can't match {0}".format(logfile)
         continue
     date = date_match.group(1).split('.')
+    previous_line = ""
     for line in open("./logs/" + logfile,'r'):
+        if line.count("[") != line.count("]"):
+            # line got continued
+            if previous_line == "":
+                previous_line = line
+                continue
+            else:
+                line = previous_line.strip() + line.strip()
+                previous_line = ""
         field_match = billing_re.search(line)
         if field_match is None:
             print "Can't match {0}".format(line)
