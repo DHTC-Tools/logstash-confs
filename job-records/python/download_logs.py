@@ -46,6 +46,7 @@ def download_log(date_string, source=None, processed=False):
     output_file = open(url_file, 'w')
     for line in request:
         output_file.write(line)
+    output_file.close()
     return True
 
 
