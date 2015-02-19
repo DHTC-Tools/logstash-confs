@@ -6,13 +6,10 @@ cur_dir=`pwd`
 source=$1
 es_index=$2
 processed=$3
+shift
+shift
+shift
 sed -i "s/ES_INDEX/$es_index/" joblog.conf
-# create index with one replica per index, it's faster although will cause
-# problems if data node goes down while indexing
-curl -XPUT "http://uct2-es-door.mwt2.org:9200/$es_index" -d '{ "settings" : { "number_of_replicas" : 0 } }'
-shift
-shift
-shift
 while [ "$1" != "" ]; do
     if [ "$processed" == 'True' ];
     then
