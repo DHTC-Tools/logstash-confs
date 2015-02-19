@@ -5,8 +5,8 @@ import urllib2
 import argparse
 
 AMAZON_CSV_URL = "http://atlas-panda-jobsarchived.s3.amazonaws.com"
-FAXBOX_PROCESSED_CSV_URL = "http://faxbox.usatlas.org/group/logs/jobs/processed/"
-FAXBOX_RAW_CSV_URL = "http://faxbox.usatlas.org/group/logs/jobs/raw/"
+FAXBOX_PROCESSED_CSV_URL = "http://login.usatlas.org/logs/jobs/processed/"
+FAXBOX_RAW_CSV_URL = "http://login.usatlas.org/logs/jobs/raw/"
 
 def download_log(date_string, source=None, processed=False):
     """
