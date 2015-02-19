@@ -11,9 +11,9 @@ sed 's/.*queue 1.*/+Project="atlas-org-uchicago"\n&/' $submit_file  > temp_file
 sed 's/.*queue 1.*/Requirements = regexp("uc3-c.*", Machine)\n&/' temp_file > $submit_file
 condor_submit *.submit
 condor_wait job_logs/*.log
-sha256sum jobsarchived$yesterday-processed.csv >> $faxbox_logs/processed/$year/sha256sum
-sha256sum jobsarchived$yesterday-bad.csv >> $faxbox_logs/processed/$year/sha256sum
-sha256sum jobsarchived$yesterday.csv >> $faxbox_logs/raw/$year/sha256sum
+sha256sum jobsarchived$yesterday-processed.csv >> $faxbox_logs/processed/$year/sha256sums
+sha256sum jobsarchived$yesterday-bad.csv >> $faxbox_logs/processed/$year/sha256sums
+sha256sum jobsarchived$yesterday.csv >> $faxbox_logs/raw/$year/sha256sums
 mv jobsarchived$yesterday-processed.csv  $faxbox_logs/processed/$year
 mv jobsarchived$yesterday-bad.csv  $faxbox_logs/processed/$year
 mv jobsarchived$yesterday.csv  $faxbox_logs/raw/$year
