@@ -1,0 +1,10 @@
+Universe   = vanilla
+Executable = EXECUTABLE
+Log        = ./billing_logs/job.$(Cluster).log
+Output   = ./billing_logs/job.$(Cluster).$(Process).out
+Error      = ./billing_logs/job.$(Cluster).$(Process).err
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT
+concurrency_limits = ES:10
+
+
