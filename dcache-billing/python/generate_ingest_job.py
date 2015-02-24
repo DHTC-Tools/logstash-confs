@@ -65,10 +65,11 @@ def create_weekly_submission(start_date, end_date, work_directory):
         if week != current_week:
             es_index = "billing_{0}_{1:0>2}".format(current_date.year,
                                                     current_week)
-            submit_addition = "arguments = {0} {1} {2} {3}\n".format(es_index,
-                                                                     date_string)
-            transfer_files = ",".join(ANCILLARY_FILES + ANCILLARY_DIR)
-            submit_addition += "transfer_input_files = {0}".format(transfer_files)
+            submit_addition = "arguments = {0} {1}\n".format(es_index,
+                                                             date_string)
+            input_list = [os.path.basename(x) for x in ANCILLARY_FILES + ANCILLARY_DIR]
+            transfer_files = ",".join(input_list)
+            submit_addition += "transfer_input_files = {0}\n".format(transfer_files)
             submit_addition += "queue 1\n"
             submission_file += submit_addition
             date_string = ""
@@ -78,10 +79,11 @@ def create_weekly_submission(start_date, end_date, work_directory):
             # need to write out arguments for this submit now
             es_index = "billing_{0}_{1:0>2}".format(current_date.year,
                                                     current_week)
-            submit_addition = "arguments = {0} {1} {2} {3}\n".format(es_index,
-                                                                     date_string)
-            transfer_files = ",".join(ANCILLARY_FILES + ANCILLARY_DIR)
-            submit_addition += "transfer_input_files = {0}".format(transfer_files)
+            submit_addition = "arguments = {0} {1}\n".format(es_index,
+                                                             date_string)
+            input_list = [os.path.basename(x) for x in ANCILLARY_FILES + ANCILLARY_DIR]
+            transfer_files = ",".join(input_list)
+            submit_addition += "transfer_input_files = {0}\n".format(transfer_files)
             submit_addition += "queue 1\n"
             submission_file += submit_addition
 
@@ -94,9 +96,10 @@ def create_weekly_submission(start_date, end_date, work_directory):
         dst_file = os.path.basename(filename)
         shutil.copyfile(filename, os.path.join(work_directory, dst_file))
     for directory in ANCILLARY_DIR:
-        shutil.copytree(directory, os.path.join(work_directory))
-    os.mkdir(os.path.join(work_directory, "job_logs"))
-    os.chmod(os.path.join(work_directory, "download_logs.py"), 0o755)
+        dir_name = os.path.basename(directory)
+        shutil.copytree(directory, os.path.join(work_directory, dir_name))
+    os.mkdir(os.path.join(work_directory, "billing_logs"))
+    os.chmod(os.path.join(work_directory, "download_billing_logs.py"), 0o755)
     os.chmod(os.path.join(work_directory, "ingest_dcache_weekly.sh"), 0o755)
 
 
@@ -113,7 +116,7 @@ def main():
     parser.add_argument('--enddate', dest='end_date', default=None,
                         help='Date to stop processing logs')
     parser.add_argument('--force', dest='force', default=False,
-                        type=bool, action='store_true',
+                        action='store_true',
                         help='Date to stop processing logs')
 
     args = parser.parse_args(sys.argv[1:])
