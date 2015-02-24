@@ -25,6 +25,10 @@
             "type" : "long",
             "doc_values": true
           },
+          "GlobalId" : {
+            "type" : "long",
+            "doc_values": true
+          },
           "JobStatus" : {
             "type" : "string"
           },
