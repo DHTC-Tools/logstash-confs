@@ -1,0 +1,495 @@
+{
+  "template" : "osg-connect-job-history",
+  "settings" : {
+    "analysis" : {
+      "analyzer": {
+        "lowercase_whitespace": {
+          "type": "custom",
+          "tokenizer":  "whitespace",
+          "filter": ["lowercase"]
+        }
+      }
+    },
+    "index" : {
+        "number_of_replicas" : 0
+    }
+  },
+  "mappings" : {
+    "_default_" : {
+      "properties" : {
+        "JobStartDate" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "Requirements" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "TransferInput" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "TotalSuspensions" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LastJobStatus" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BufferBlockSize" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "OrigMaxHosts" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RequestMemory" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "WantRemoteSyscalls" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "LastHoldReasonCode" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "ExitStatus" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "Args" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "JobFinishedHookDone" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "JobCurrentStartDate" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "CompletionDate" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "JobLeaseDuration" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "Err" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "RemoteWallClockTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "JobUniverse" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RequestCpus" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LastRemoteHost" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "Environment" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "StreamErr" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "Rank" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "WantRemoteIO" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "LocalSysCpu" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "UsedOCWrapper" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "CumulativeSlotTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "TransferIn" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "MachineAttrCpus0" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "CondorPlatform" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "TargetType" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "CurrentTime" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "ExitReason" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "StreamOut" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "WantCheckpoint" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "GlobalJobId" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "Iwd" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "TransferInputSizeMB" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LastPublicClaimId" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "MemoryUsage" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "NumSystemHolds" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "TransferOutput" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "PeriodicRemove" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "NumSystemHolds" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "NumShadowStarts" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LastSuspensionTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "ShouldTransferFiles" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "QDate" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RemoteSysCpu" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "ImageSize_RAW" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DiskUsage_RAW" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "CondorVersion" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "JobStatus" : {
+          "type" : "string",
+          "doc_values": true
+        },
+        "CumulativeSuspensionTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "NumCkpts_RAW" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "JobCurrentStartExecutingDate" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "ProjectName" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "CoreSize" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RemoteUserCpu" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BytesSent" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "Owner" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "ExitCode" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "NumJobStarts" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "ExecutableSize_RAW" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "Notification" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "ExecutableSize" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RemoveReason" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "StartdPrincipal" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "RootDir" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "MinHosts" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BytesRecvd" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "JOBGLIDEIN_ResourceName" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "ProcId" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "MATCH_EXP_JOBGLIDEIN_ResourceName" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "OnExitRemove" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "User" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "UserLog" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "CommittedSuspensionTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "NumRestarts" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "JobCoreDumped" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "Cmd" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "NumJobMatches" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "MaxHosts" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DiskUsage" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LastRemotePool" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "PeriodicRelease" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "CommittedSlotTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "ResidentSetSize" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "WhenToTransferOutput" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "ExitBySignal" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "Out" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "RequestDisk" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "ImageSize" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "NumCkpts" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LastJobLeaseRenewal" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "MachineAttrSlotWeight0" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "ResidentSetSize_RAW" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "JobPrio" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "JobRunCount" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "PeriodicHold" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "ClusterId" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "NiceUser" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "MyType" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "LocalUserCpu" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BufferSize" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LastHoldReason" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "CurrentHosts" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LeaveJobInQueue" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "OnExitHold" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "EnteredCurrentStatus" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "CommittedTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LastMatchTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "In" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "JobNotification" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "@timestamp" : {
+          "type" : "date",
+          "format" : "dateOptionalTime"
+        }
+      }
+    }
+  }
+}
+
+
+{
+
+"LastMatchTime": 1400862282,
+"In": "/dev/null",
+"JobNotification": 0
+}
