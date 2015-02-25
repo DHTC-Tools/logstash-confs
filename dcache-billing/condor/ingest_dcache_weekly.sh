@@ -3,28 +3,19 @@
 export PATH=/bin:/usr/bin
 cur_dir=`pwd`
 # save the first three arguments and then discard
-source=$1
-es_index=$2
-processed=$3
+es_index=$1
 shift
 shift
 shift
-sed -i "s/ES_INDEX/$es_index/" joblog.conf
+sed -i "s/DCACHE_INDEX/$es_index/" joblog.conf
 while [ "$1" != "" ]; do
-    if [ "$processed" == 'True' ];
-    then
-        ./download_logs.py --date $1 --source ${source} --processed
-        cat jobsarchived$1-processed.csv | /opt/logstash/bin/logstash -f joblog.conf
-        sleep 120
-    else
-        ./download_logs.py --date $1 --source ${source}
-        ./process_logs.py --date $1
-        cat jobsarchived$1-processed.csv | /opt/logstash/bin/logstash -f joblog.conf
-        sleep 120
-    fi
+    ./download_billing_logs.py --date $1
+    cat billing-$1 | /opt/logstash/bin/logstash -f dcache-billing-full.conf
+    cat billing-error-$1 | /opt/logstash/bin/logstash -f dcache-billing-full.conf
+    sleep 120
     shift
 done
 
-rm *.csv
+rm billing*
 # need to delete joblog.conf to prevent modified version from being transferred back
-rm joblog.conf
+rm dcache-billing-full.conf
