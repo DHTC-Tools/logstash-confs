@@ -7,7 +7,7 @@ es_index=$1
 shift
 shift
 shift
-sed -i "s/DCACHE_INDEX/$es_index/" joblog.conf
+sed -i "s/DCACHE_INDEX/$es_index/" dcache-billing-full.conf
 while [ "$1" != "" ]; do
     ./download_billing_logs.py --date $1
     cat billing-$1 | /opt/logstash/bin/logstash -f dcache-billing-full.conf
