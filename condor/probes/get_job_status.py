@@ -12,7 +12,7 @@ import htcondor
 import elasticsearch
 from elasticsearch import helpers
 
-VERSION = '0.1'
+VERSION = '0.3'
 JOB_STATUS = {0: 'Unexpanded',
               1: 'Idle',
               2: 'Running',
@@ -21,7 +21,8 @@ JOB_STATUS = {0: 'Unexpanded',
               5: 'Held',
               6: 'Submission Error'}
 JOB_ATTRS = ['ProcId',
-             'ClusterId', 
+             'ClusterId',
+             'GlobalJobId'
              'JobStatus', 
              'User', 
              'ProjectName', 

@@ -1,0 +1,145 @@
+{
+  "template" : "billing_20*",
+  "settings" : {
+    "analysis" : {
+      "analyzer": {
+        "lowercase_whitespace": {
+          "type": "custom",
+          "tokenizer":  "whitespace",
+          "filter": ["lowercase"]
+        }
+      }
+    },
+    "index" : {
+        "number_of_replicas" : 0
+    }
+  },
+  "mappings" : {
+    "_default_" : {
+        "properties" : {
+          "cell_type" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "cell_name" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "request_type" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "remove_pool" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "remove_files" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "remove_pnfs_ids" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "pnfs_id" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "filesize" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "request_dn" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "uid" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "gid" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "client" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "result_code" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "message" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "path" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "storage_name" : {
+            "type" : "string"
+          },
+          "storage_group" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "storage_type" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "bytes_transferred" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "bytes_transferred" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "transaction_time" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "transfer_time" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "queuing_time" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "connection_time" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "created" : {
+            "type" : "string",
+          },
+          "protocol" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "port" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "protocol_payload" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "initiator_type" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "initiator" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "@timestamp" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          }
+        }
+      }
+    }
+}

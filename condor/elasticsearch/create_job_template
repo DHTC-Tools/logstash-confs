@@ -25,6 +25,10 @@
             "type" : "long",
             "doc_values": true
           },
+          "GlobalJobId" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
           "JobStatus" : {
             "type" : "string"
           },
