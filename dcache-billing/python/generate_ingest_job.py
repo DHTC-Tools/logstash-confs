@@ -43,6 +43,7 @@ def validate_date(arg):
         return None
     return temp
 
+
 def create_weekly_submission(start_date, end_date, work_directory):
     """
     Create a condor submit file and ancillary files needed to
@@ -74,7 +75,7 @@ def create_weekly_submission(start_date, end_date, work_directory):
             submission_file += submit_addition
             date_string = ""
             current_week = week
-        date_string += " {0}".format(current_date.isoformat().replace('-', ''))
+        date_string += " {0}".format(current_date.isoformat().replace('-', '.'))
         if current_date > end_date:
             # need to write out arguments for this submit now
             es_index = "billing_{0}_{1:0>2}".format(current_date.year,
