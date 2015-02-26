@@ -57,7 +57,7 @@ def create_weekly_submission(start_date, end_date, work_directory):
     submission_file = submission_file.replace('USER', getpass.getuser())
     submission_file = submission_file.replace('EXECUTABLE', 'ingest_dcache_weekly.sh')
     current_date = start_date
-    date_string = current_date.isoformat().replace('-', '')
+    date_string = current_date.isoformat().replace('-', '.')
     current_week = current_date.isocalendar()[1]
     while current_date <= end_date:
         current_date += datetime.timedelta(days=1)
