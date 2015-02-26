@@ -5,8 +5,6 @@ cur_dir=`pwd`
 # save the first three arguments and then discard
 es_index=$1
 shift
-shift
-shift
 sed -i "s/DCACHE_INDEX/$es_index/" dcache-billing-full.conf
 while [ "$1" != "" ]; do
     ./download_billing_logs.py --date $1
