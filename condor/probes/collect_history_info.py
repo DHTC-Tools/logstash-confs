@@ -5,6 +5,7 @@ import time
 import os
 import json
 import re
+import cStringIO
 
 import redis
 
@@ -53,7 +54,8 @@ def parse_classad(buffer):
     classad = {}
     classads = []
     remaining_buffer = ""
-    for line in buffer:
+    temp = cStringIO.StringIO(buffer)
+    for line in temp:
         if not line:
             break
         match = completion_re.match(line)
@@ -63,7 +65,11 @@ def parse_classad(buffer):
             classad = {}
             remaining_buffer = ""
         else:
-            (key, value) = line.split('=')
+            fields = line.split('=')
+            if len(fields) != 2:
+                continue
+            key = fields[0].strip()
+            value = fields[1].strip()
             classad[key.strip()] = value.strip()
             remaining_buffer += line
     return classads, remaining_buffer
@@ -79,7 +85,7 @@ def watch_history_file():
     while (not os.path.exists(CONDOR_HISTORY_LOG) or
                not os.path.isfile(CONDOR_HISTORY_LOG)):
         time.sleep(1)
-    log_file = os.open(CONDOR_HISTORY_LOG)
+    log_file = open(CONDOR_HISTORY_LOG)
     file_stat = os.stat(CONDOR_HISTORY_LOG)
     current_inode = file_stat.st_ino
     client = get_redis_client()
@@ -103,4 +109,5 @@ def watch_history_file():
                     publish_classad(classad, REDIS_CHANNEL, client)
 
 
-
+if __name__ == "__main__":
+   watch_history_file() 
