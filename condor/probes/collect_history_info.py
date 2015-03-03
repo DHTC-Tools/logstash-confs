@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import time
 import os
 import json
@@ -14,6 +13,27 @@ REDIS_CHANNEL = 'osg-connect-history'
 CONDOR_HISTORY_LOG = '/var/lib/condor/spool/history'
 # number of seconds to wait before polling history file
 POLL_INTERVAL = 60
+JOB_STATUS = {'0': 'Unexpanded',
+              '1': 'Idle',
+              '2': 'Running',
+              '3': 'Removed',
+              '4': 'Completed',
+              '5': 'Held',
+              '6': 'Submission Error'}
+JOB_UNIVERSE = {'0': 'Min',
+                '1': 'Standard',
+                '2': 'Pipe',
+                '3': 'Linda',
+                '4': 'PVM',
+                '5': 'Vanilla',
+                '6': 'PVMD',
+                '7': 'Scheduler',
+                '8': 'MPI',
+                '9': 'Grid',
+                '10': 'Java',
+                '11': 'Parallel',
+                '12': 'Local',
+                '13': 'Max'}
 
 def publish_classad(classad, channel, redis_client):
     """
@@ -70,7 +90,22 @@ def parse_classad(buffer):
                 continue
             key = fields[0].strip()
             value = fields[1].strip()
-            classad[key.strip()] = value.strip()
+            if key in classad:
+                try:
+                    value = int(value)
+                    if value > classad[key]:
+                        classad[key] = temp
+                        continue
+                except ValueError:
+                    classad[key.strip()] = value.strip()
+                    continue
+            if value[0] == '"' and value[-1] == '"':
+                value = value[1:-1]
+            if key == 'JobStatus':
+                value = JOB_STATUS[value]
+            if key == 'JobUniverse':
+                value = JOB_UNIVERSE[value]
+            classad[key] = value
             remaining_buffer += line
     return classads, remaining_buffer
 
@@ -84,7 +119,7 @@ def watch_history_file():
     """
     while (not os.path.exists(CONDOR_HISTORY_LOG) or
                not os.path.isfile(CONDOR_HISTORY_LOG)):
-        time.sleep(1)
+        time.sleep(POLL_INTERVAL)
     log_file = open(CONDOR_HISTORY_LOG)
     file_stat = os.stat(CONDOR_HISTORY_LOG)
     current_inode = file_stat.st_ino
@@ -99,7 +134,7 @@ def watch_history_file():
                 log_file.close()
                 current_inode = new_stat.st_ino
                 log_file = open(CONDOR_HISTORY_LOG)
-            time.sleep(60)
+            time.sleep(POLL_INTERVAL)
             log_file.seek(where)
         else:
             buffer += line

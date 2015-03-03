@@ -40,6 +40,30 @@
           "type" : "long",
           "doc_values": true
         },
+        "RecentBlockReadKbytes" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RecentBlockReads" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RecentBlockWritesKbytes" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RecentBlockWrites" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RecentStatsLifetimeStarter" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "StatsLifetimeStarter" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "BufferBlockSize" : {
           "type" : "long",
           "doc_values": true
@@ -97,7 +121,15 @@
           "type" : "long",
           "doc_values": true
         },
+        "LastHoldReasonSubCode" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "ExitStatus" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "ExitSignal" : {
           "type" : "long",
           "doc_values": true
         },
@@ -110,6 +142,10 @@
           "doc_values": true
         },
         "JobCurrentStartDate" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "JobLastStartDate" : {
           "type" : "long",
           "doc_values": true
         },
@@ -237,11 +273,19 @@
           "type" : "long",
           "doc_values": true
         },
+        "NumShadowExceptions" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "NumShadowStarts" : {
           "type" : "long",
           "doc_values": true
         },
         "LastSuspensionTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "LastVacateTime" : {
           "type" : "long",
           "doc_values": true
         },
@@ -389,6 +433,10 @@
           "type" : "long",
           "doc_values": true
         },
+        "NumJobReconnects" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "MaxHosts" : {
           "type" : "long",
           "doc_values": true
@@ -413,6 +461,10 @@
           "type" : "long",
           "doc_values": true
         },
+        "ResidentSetSize_RAW" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "WhenToTransferOutput" : {
           "type" : "string",
           "analyzer" : "lowercase_whitespace"
@@ -434,6 +486,10 @@
           "doc_values": true
         },
         "NumCkpts" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "NumCkpts_RAW" : {
           "type" : "long",
           "doc_values": true
         },
@@ -509,11 +565,35 @@
           "type" : "long",
           "doc_values": true
         },
+        "LastRejMatchTime" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "In" : {
           "type" : "string",
           "analyzer" : "lowercase_whitespace"
         },
         "JobNotification" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAGManJobId" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAGManNodesLog" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "DAGNodeName" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "DAGParentNodeNames" : {
+          "type" : "string",
+          "analyzer" : "lowercase_whitespace"
+        },
+        "KeepClaimIdle" : {
           "type" : "long",
           "doc_values": true
         },
