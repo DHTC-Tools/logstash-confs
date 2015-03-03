@@ -79,7 +79,7 @@ def watch_history_file():
     while (not os.path.exists(CONDOR_HISTORY_LOG) or
                not os.path.isfile(CONDOR_HISTORY_LOG)):
         time.sleep(1)
-    log_file = os.open(CONDOR_HISTORY_LOG)
+    log_file = open(CONDOR_HISTORY_LOG)
     file_stat = os.stat(CONDOR_HISTORY_LOG)
     current_inode = file_stat.st_ino
     client = get_redis_client()
