@@ -22,7 +22,7 @@
           "doc_values": true
         },
         "AutoClusterAttrs" : {
-          "type" : "string",
+          "type" : "string"
         },
         "BlockReadKbytes" : {
           "type" : "long",
