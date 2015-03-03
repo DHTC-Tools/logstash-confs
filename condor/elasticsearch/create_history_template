@@ -17,6 +17,46 @@
   "mappings" : {
     "_default_" : {
       "properties" : {
+        "AutoClusterId" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "AutoClusterAttrs" : {
+          "type" : "string",
+        },
+        "BlockReadKbytes" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BlockReads" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BlockWritesKbytes" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BlockWrites" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BufferBlockSize" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BufferSize" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BytesRecvd" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BytesSent" : {
+          "type" : "long",
+          "doc_values": true
+        },
+
         "JobStartDate" : {
           "type" : "long",
           "doc_values": true
