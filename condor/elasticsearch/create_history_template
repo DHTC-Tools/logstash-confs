@@ -166,8 +166,7 @@
           "doc_values": true
         },
         "JobUniverse" : {
-          "type" : "long",
-          "doc_values": true
+          "type" : "string"
         },
         "RequestCpus" : {
           "type" : "long",
@@ -314,8 +313,7 @@
           "analyzer" : "lowercase_whitespace"
         },
         "JobStatus" : {
-          "type" : "string",
-          "doc_values": true
+          "type" : "string"
         },
         "CumulativeSuspensionTime" : {
           "type" : "long",
