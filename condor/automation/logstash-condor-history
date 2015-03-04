@@ -60,8 +60,8 @@ start() {
   year=`date +"%Y"`
   month=`date +"%m"`
   history_index="osg-connect-job-history-$year-$month"
-  cp /etc/logstash/logstash-condor-history.conf /var/lib/logstash-condor-history/logstash.conf
-  sed -i "s/HISTORY_INDEX/$history_index/" /var/lib/logstash-condor-history/logstash.conf
+  cp /etc/logstash/logstash-condor-history.conf /var/lib/logstash-condor-history/condor-history.conf
+  sed -i "s/HISTORY_INDEX/$history_index/" /var/lib/logstash-condor-history/condor-history.conf
 
   # Run the program!
   nice -n ${LS_NICE} chroot --userspec $LS_USER:$LS_GROUP / sh -c "
