@@ -62,7 +62,7 @@ start() {
   history_index="osg-connect-job-history-$year-$month"
   cp /etc/logstash/logstash-condor-history.conf /var/lib/logstash-condor-history/condor-history.conf
   sed -i "s/HISTORY_INDEX/$history_index/" /var/lib/logstash-condor-history/condor-history.conf
-
+  chown $LS_USER:$LS_GROUP /var/lib/logstash-condor-history/condor-history.conf
   # Run the program!
   nice -n ${LS_NICE} chroot --userspec $LS_USER:$LS_GROUP / sh -c "
     cd $LS_HOME
