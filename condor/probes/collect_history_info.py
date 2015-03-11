@@ -96,6 +96,8 @@ def parse_classad(buffer):
                     if value > classad[key]:
                         classad[key] = temp
                         continue
+                    else:
+                        continue
                 except ValueError:
                     classad[key.strip()] = value.strip()
                     continue
