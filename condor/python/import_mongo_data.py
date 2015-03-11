@@ -1,0 +1,117 @@
+#!/usr/bin/env python
+
+__author__ = 'sthapa'
+
+import time
+import datetime
+import argparse
+import sys
+
+import elasticsearch
+import elasticsearch.helpers
+import pymongo
+
+MONGO_SERVER = 'db.mwt2.org'
+MONGO_SERVER_PORT = 27017
+ES_NODES = 'uct2-es-door.mwt2.org'
+VERSION = '0.1'
+
+
+def get_mongo_client():
+    """
+    Function to instantiate a mongodb client that is using the
+    condor_history collection
+
+    :return: mongoDB client instance using the condor_history collection
+    """
+    db_client = pymongo.MongoClient(host=MONGO_SERVER, port=MONGO_SERVER_PORT)
+    db = db_client.condor_history
+    return db
+
+
+def get_es_client():
+    """
+    Function to instantiate an ES client and return object reference for
+    further use
+
+    :return: Elasticsearch client instance
+    """
+    return elasticsearch.Elasticsearch(ES_NODES,
+                                       sniff_on_start=True,
+                                       sniff_on_connection_fail=True,
+                                       sniffer_timeout=60)
+
+
+def get_month_records(year=2014, month=None, db=None):
+    """
+    Get the condor history records for given year and month from
+    mongodb and return a list of records
+
+    :param year: year of interest (as an integer)
+    :param month: integer giving the month of interest
+    :param db: connection to mongodb
+    :return: a list of classads stored as a dictionary
+    """
+    classads = []
+    if month is None or db is None:
+        return classads
+    start_date = datetime.date(year, month, 1)
+    end_date = datetime.date(year + (month/12), ((month + 1) % 12), 1)
+    db_query = {"date": {"$gte": time.mktime(start_date.timetuple()),
+                         "$lt": time.mktime(end_date.timetuple())}}
+    for classad in db.find(db_query):
+        classads.append(classad)
+    return classads
+
+
+def export_to_es(classads, year, month, es_client):
+    """
+    export classads to appropriate index in elasticsearch
+    :param classads: list of classads stored as dicts (e.g. [{}. {}])
+    :param year: year that the classads were obtained from
+    :param month: year that the classads were obtained from
+    :param es_client: Elasticsearch client instance
+    :return: nothing
+    """
+    if not classads:
+        return
+    actions = []
+    index = "osg-connect-job-history-{0}-{1}".format(year, month)
+    for classad in classads:
+        classad_insert = {"_opt_type": "index",
+                          "_index": index,
+                          "_type": "history-record",
+                          "doc": classad}
+        actions.append(classad_insert)
+    results = elasticsearch.helpers.bulk(es_client, actions)
+    sys.stdout.write("Number of documents index: {0}\n".format(results[0]))
+    if results[1]:
+        sys.stderr.write("Errors encountered:")
+        for err in results[1]:
+            sys.stderr.write("{0}\n".format(err))
+
+
+def run_main():
+    """
+    Main function, parse arguments and then transfer records from mongodb to ES
+    """
+    parser = argparse.ArgumentParser(description='Insert condor job history from mongodb to ES')
+    parser.add_argument('--year', default=0, type=int,
+                        help='String indicating year')
+    parser.add_argument('--month', default=0, type=int,
+                        help='String indicating month')
+
+    parser.add_argument('--version', action='version', version=VERSION)
+    args = parser.parse_args()
+    if args.year == 0 or args.end == 0:
+        sys.stderr.write("Date must be given\n")
+        sys.exit(1)
+
+    mongodb_client = get_mongo_client()
+    es_client = get_es_client()
+    classads = get_month_records(args.year, args.month, mongodb_client)
+    export_to_es(classads, es_client)
+
+
+if __name__ == '__main__':
+    run_main()
