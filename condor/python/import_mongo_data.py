@@ -6,6 +6,7 @@ import time
 import datetime
 import argparse
 import sys
+import logging
 
 import elasticsearch
 import elasticsearch.helpers
@@ -36,10 +37,7 @@ def get_es_client():
 
     :return: Elasticsearch client instance
     """
-    return elasticsearch.Elasticsearch(ES_NODES,
-                                       sniff_on_start=True,
-                                       sniff_on_connection_fail=True,
-                                       sniffer_timeout=60)
+    return elasticsearch.Elasticsearch(ES_NODES)
 
 
 def get_month_records(year=2014, month=None, db=None):
@@ -57,10 +55,12 @@ def get_month_records(year=2014, month=None, db=None):
         return classads
     start_date = datetime.date(year, month, 1)
     end_date = datetime.date(year + (month/12), ((month + 1) % 12), 1)
-    db_query = {"date": {"$gte": time.mktime(start_date.timetuple()),
-                         "$lt": time.mktime(end_date.timetuple())}}
-    for classad in db.find(db_query):
+    db_query = {"CompletionDate": {"$gte": time.mktime(start_date.timetuple()),
+                                   "$lt": time.mktime(end_date.timetuple())}}
+    print db_query
+    for classad in db.history_records.find(db_query):
         classads.append(classad)
+    print len(classads)
     return classads
 
 
@@ -103,14 +103,14 @@ def run_main():
 
     parser.add_argument('--version', action='version', version=VERSION)
     args = parser.parse_args()
-    if args.year == 0 or args.end == 0:
+    if not args.year or not args.month:
         sys.stderr.write("Date must be given\n")
         sys.exit(1)
 
     mongodb_client = get_mongo_client()
     es_client = get_es_client()
     classads = get_month_records(args.year, args.month, mongodb_client)
-    export_to_es(classads, es_client)
+    export_to_es(classads, args.year, args.month, es_client)
 
 
 if __name__ == '__main__':
