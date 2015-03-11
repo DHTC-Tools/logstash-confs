@@ -55,7 +55,7 @@ def get_month_records(year=2014, month=None, db=None):
     if month is None or db is None:
         return classads
     start_date = datetime.date(year, month, 1)
-    end_date = datetime.date(year + (month/12), ((month + 1) % 12), 1)
+    end_date = datetime.date(year + (month/12), (month % 12) + 1, 1)
     db_query = {"CompletionDate": {"$gte": time.mktime(start_date.timetuple()),
                                    "$lt": time.mktime(end_date.timetuple())}}
     for classad in db.history_records.find(db_query):
