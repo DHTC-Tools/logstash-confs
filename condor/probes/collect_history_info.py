@@ -35,6 +35,7 @@ JOB_UNIVERSE = {'0': 'Min',
                 '12': 'Local',
                 '13': 'Max'}
 
+
 def publish_classad(classad, channel, redis_client):
     """
     Publishes a classad to a Redis pub/sub channel
@@ -47,6 +48,7 @@ def publish_classad(classad, channel, redis_client):
         return
     redis_client.publish(channel, json.dumps(classad))
     return
+
 
 def get_redis_client():
     """
@@ -61,12 +63,12 @@ def get_redis_client():
 completion_re = re.compile(r'\*\*\*\s+Offset\s+=\s+\d+.*CompletionDate\s+=\s+(\d+)')
 
 
-def parse_classad(buffer):
+def parse_classad(buff):
     """
     Parse and return all classads found in buffer and returning any left
     over text
 
-    :param buffer: string with
+    :param buff: string with
     :return: tuple (classads, string) with a list of classads and remaining
     part of the buffer
     """
@@ -74,7 +76,7 @@ def parse_classad(buffer):
     classad = {}
     classads = []
     remaining_buffer = ""
-    temp = cStringIO.StringIO(buffer)
+    temp = cStringIO.StringIO(buff)
     for line in temp:
         if not line:
             break
@@ -126,7 +128,7 @@ def watch_history_file():
     file_stat = os.stat(CONDOR_HISTORY_LOG)
     current_inode = file_stat.st_ino
     client = get_redis_client()
-    buffer = ""
+    buff = ""
     while True:
         where = log_file.tell()
         line = log_file.readline()
@@ -139,8 +141,8 @@ def watch_history_file():
             time.sleep(POLL_INTERVAL)
             log_file.seek(where)
         else:
-            buffer += line
-            classads, buffer = parse_classad(buffer)
+            buff += line
+            classads, buff = parse_classad(buff)
             if classads:
                 for classad in classads:
                     publish_classad(classad, REDIS_CHANNEL, client)
