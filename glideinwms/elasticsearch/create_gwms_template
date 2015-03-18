@@ -1,0 +1,193 @@
+{
+  "template" : "gwms-job-details-*",
+  "settings" : {
+    "analysis" : {
+      "analyzer": {
+        "lowercase_whitespace": {
+          "type": "custom",
+          "tokenizer":  "whitespace",
+          "filter": ["lowercase"]
+        }
+      }
+    },
+    "index" : {
+        "number_of_replicas" : 0
+    }
+  },
+  "mappings" : {
+    "_default_" : {
+        "properties" : {
+          "NodeCheckStatus" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "CwdFreeKb" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "CwdMinKb" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "TmpFreeKb" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "TmpMinKb" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "TmpWritable" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "MaxMemMBs" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "GLIDEIN_CPUS" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "GLIDEIN_SiteWMS" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "GLIDEIN_SiteWMS_Slot" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "GLIDEIN_SiteWMS_Queue" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "AutoShutdown" :   {
+            "type" : "boolean",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "CondorDuration" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "TotalJobsNr" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "TotalJobsTime" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "goodZJobsNr" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "goodZJobsTime" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "goodNZJobsNr" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "goodNZJobsTime" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "badSignalJobsNr" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "badSignalJobsTime" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "badOtherJobsNr" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "badOtherJobsTime" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "CondorKilled" : {
+            "type" : "boolean",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "glidein_factory" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "glidein_name" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "glidein_entry" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "condorg_cluster" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+
+          "condorg_subcluster" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "glidein_credential_id" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "condorg_schedd" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "client_name" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "client_group" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "user" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "os" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "hostname" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "cwd" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "jobs_run": {
+            "type": "nested",
+            "properties": {
+              "job_id": {
+                "type": "long",
+                "doc_values": true
+              },
+              "status": {
+                "type": "short",
+                "doc_values": true
+              },
+              "duration": {
+                "type": "long",
+                "doc_values": true
+              }
+            }
+          },
+          "@timestamp" : {
+            "type" : "date",
+            "format" : "dateOptionalTime"
+          }
+        }
+      }
+    }
+}
