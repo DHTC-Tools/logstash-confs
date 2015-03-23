@@ -7,7 +7,8 @@ import logging
 import pytz
 import os
 import glob
-import xml.etree
+import xml.etree.ElementTree as ET
+import dateutil.parser
 
 import elasticsearch
 from elasticsearch import helpers
@@ -52,6 +53,7 @@ env_list = ['glidein_factory',
             'os',
             'hostname',
             'cwd']
+TIMEZONE = "US/Central"
 
 def get_es_client():
     """
@@ -101,22 +103,21 @@ def get_xml_info(filename):
     """
     if not os.path.isfile(filename):
         return {}
-    tree = xml.etree.ElementTree.parse(filename)
+    tree = ET.parse(filename)
     root = tree.getroot()
     record = {}
-    for metric in root.iter('metric'):
-        if metric in metric_list:
+    for metric in root.getiterator('metric'):
+        if metric.get('name') in metric_list:
             record[metric.get('name')] = metric.text
         if metric.get('name') == 'CwdFreeKb':
-            timestamp = datetime.datetime.strptime(metric.get('ts'),
-                                                   '%Y-%m-%dT%H:%M:%S%z')
+            timestamp = dateutil.parser.parse(metric.get('ts'))
             iso_year, iso_week, iso_weekday = timestamp.isocalendar()
             record['@timestamp'] = timestamp
             record['isoyear'] = iso_year
             record['isoweek'] = iso_week
             record['isoweekday'] = iso_weekday
-    for env in root.iter('env'):
-        if env in env_list:
+    for env in root.getiterator('env'):
+        if env.get('name') in env_list:
             record[env.get('name')] = env.text
     return record
 
@@ -134,7 +135,7 @@ def save_job_records(client=None, records=None, index=None):
                  records,
                  index=index,
                  doc_type='job_record',
-                 stats_only=True)
+                 stats_only=False)
 
 
 def main():
@@ -164,6 +165,9 @@ def main():
     es_client = get_es_client()
     records = []
     current_week_date = start_date
+    end_datetime = datetime.datetime.combine(end_date, datetime.time(0, 0, 0))
+    timezone = pytz.timezone(TIMEZONE)
+    end_datetime = timezone.localize(end_datetime)
     for filename in glob.glob(os.path.join(args.location, '*.xml')):
         record = get_xml_info(filename)
         records.append(record)
@@ -174,10 +178,11 @@ def main():
         insert_records = []
         for record in records:
             if record['isoweek'] == iso_week and record['isoyear'] == iso_year:
-                if record['@timestamp'] > end_date:
+                if record['@timestamp'] > end_datetime:
                     continue
                 del record['isoweek']
                 del record['isoyear']
+                del record['isoweekday']
                 insert_records.append(record)
             elif record['isoyear'] > iso_year:
                 new_records.append(record)
@@ -185,7 +190,7 @@ def main():
                 new_records.append(record)
         save_job_records(es_client, insert_records, index)
         records = new_records
-        current_week_date =+ datetime.timedelta(days=(8 - iso_weekday))
+        current_week_date += datetime.timedelta(days=(8 - iso_weekday))
 
 
 if __name__ == '__main__':
