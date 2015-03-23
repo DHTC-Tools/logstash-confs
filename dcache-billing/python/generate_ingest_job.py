@@ -118,7 +118,7 @@ def main():
                         help='Date to stop processing logs')
     parser.add_argument('--force', dest='force', default=False,
                         action='store_true',
-                        help='Date to stop processing logs')
+                        help='Force overwrite of directory in location arg')
 
     args = parser.parse_args(sys.argv[1:])
     if args.location is None:
