@@ -38,7 +38,7 @@
             "doc_values": true
           },
           "TmpWritable" : {
-            "type" : "long",
+            "type" : "boolean",
             "doc_values": true
           },
           "MaxMemMBs" : {
