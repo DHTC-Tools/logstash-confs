@@ -92,7 +92,15 @@ def save_job_records(client=None, records=None):
     """
     if client is None or records is None or records == []:
         return
-    helpers.bulk(client, records, index='osg-connect-job-details', doc_type='job_record', stats_only=True)
+    timezone = pytz.timezone(TZ_NAME)
+    current_time = timezone.localize(datetime.datetime.now())
+    year, week, _ = current_time.isocalendar()
+    index_name = 'osg-connect-job-details-{0}-{1}'.format(year, week)
+    helpers.bulk(client,
+                 records,
+                 index=index_name,
+                 doc_type='job_record',
+                 stats_only=True)
     # client.index(index='osg-connect-jobs', doc_type='job_record', body=record)
 
 
