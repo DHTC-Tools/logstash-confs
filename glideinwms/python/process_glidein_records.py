@@ -7,6 +7,7 @@ import logging
 import pytz
 import os
 import glob
+import xml
 import xml.etree.ElementTree as ET
 import dateutil.parser
 
@@ -103,7 +104,10 @@ def get_xml_info(filename):
     """
     if not os.path.isfile(filename):
         return {}
-    tree = ET.parse(filename)
+    try:
+        tree = ET.parse(filename)
+    except xml.parsers.expat.ExpatError:
+        return {}
     root = tree.getroot()
     record = {}
     for metric in root.getiterator('metric'):
@@ -173,10 +177,12 @@ def main():
         records.append(record)
     while current_week_date < end_date:
         iso_year, iso_week, iso_weekday = current_week_date.isocalendar()
-        index = "gwms-job-details-{0}-{1}".format(iso_year, iso_week)
+        index = "gwms-job-details-{0}-{1:0>2}".format(iso_year, iso_week)
         new_records = []
         insert_records = []
         for record in records:
+            if 'isoweek' not in record:
+                continue
             if record['isoweek'] == iso_week and record['isoyear'] == iso_year:
                 if record['@timestamp'] > end_datetime:
                     continue
