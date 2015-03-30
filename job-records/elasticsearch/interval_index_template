@@ -1,0 +1,62 @@
+{
+  "template" : "interval_data_20*",
+  "settings" : {
+    "analysis" : {
+      "analyzer": {
+        "lowercase_whitespace": {
+          "type": "custom",
+          "tokenizer":  "whitespace",
+          "filter": ["lowercase"]
+        }
+      }
+    },
+    "index" : {
+        "number_of_replicas" : 3
+    }
+  },
+  "mappings" : {
+    "_default_" : {
+        "properties" : {
+          "CRTIME" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "PANDAID" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "CLOUD" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "COMPUTINGSITE" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "PRODSOURCELABEL" : {
+            "type" : "string",
+            "analyzer" : "lowercase_whitespace"
+          },
+          "SKIPPED" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "SORTED" : {
+            "type" : "long",
+            "doc_values": true
+          },
+          "times" : {
+            "type": "nested",
+            "properties": {
+              "state": {
+                "type": "string"
+              },
+              "time": {
+                "type": "long",
+                "doc_values": true
+              }
+          }
+        }
+      }
+    }
+}
