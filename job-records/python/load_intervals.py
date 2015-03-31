@@ -10,11 +10,13 @@ import sys
 import re
 import argparse
 import pytz
+import logging
+import json
 
 import elasticsearch
 from elasticsearch import helpers
 
-VERSION = '0.1'
+VERSION = '0.2'
 TZ_NAME = 'UTC'
 ES_HOST = 'uct2-es-door.mwt2.org'
 TIMEZONE = pytz.timezone(TZ_NAME)
@@ -28,14 +30,14 @@ def save_records(es_client=None, records=None):
         return
     helpers.bulk(es_client,
                  records,
+                 index="interval-data-2014-32",
                  doc_type='interval_record',
                  stats_only=True)
-
 
 def load_data(directory, es_client):
     """
     Load data from a directory with interval data in files named
-    PART-*
+    part-*
 
     :param directory: path to directory
     :param es_client: ES client object to use
@@ -45,7 +47,7 @@ def load_data(directory, es_client):
         return
     doc_count = 0
     records = []
-    for filename in glob.glob(os.path.join(directory, "PART-*")):
+    for filename in glob.glob(os.path.join(directory, "part-*")):
         sys.stdout.write("Loading {0} file\n".format(filename))
         for line in open(filename):
             record = parse_record(line)
@@ -56,7 +58,10 @@ def load_data(directory, es_client):
                 save_records(es_client, records)
                 records = []
                 sys.stdout.write("Wrote {0} records\n".format(doc_count))
-
+        if records != []:
+            save_records(es_client, records)
+            records = []
+            sys.stdout.write("Wrote {0} records\n".format(doc_count))
 
 def parse_record(line):
     """
@@ -71,19 +76,20 @@ def parse_record(line):
     fields = line.split("\t")
     event_time = datetime.datetime.fromtimestamp(float(fields[0])/1000.0,
                                                  TIMEZONE)
+    record['@timestamp'] = event_time.isoformat()
     record['CRTIME'] = event_time.isoformat()
-    record['PANDAID'] = fields[1]
-    record['CLOUD'] = fields[2]
-    record['COMPUTINGSITE'] = fields[3]
-    record['PRODSOURCELABEL'] = fields[4]
+    record['PANDAID'] = int(fields[1])
+    record['CLOUD'] = fields[2].strip()
+    record['COMPUTINGSITE'] = fields[3].strip()
+    record['PRODSOURCELABEL'] = fields[4].strip()
     raw_times = fields[5]
     record['times'] = []
     if raw_times != '{}':
         for x in re.finditer('\((\w+),(\d+)\)', raw_times):
-            record['times'].append({'state': x.group(1),
+            record['times'].append({'state': x.group(1).strip(),
                                     'time': x.group(2)})
-    record['SKIPPED'] = fields[6]
-    record['SORTED'] = fields[7]
+    record['SKIPPED'] = int(fields[6])
+    record['SORTED'] = int(fields[7].strip())
     year, iso_week, _ = event_time.isocalendar()
     record['_index'] = "interval-data-{0}-{1}".format(year, iso_week)
     return record
