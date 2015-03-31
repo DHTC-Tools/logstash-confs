@@ -15,48 +15,49 @@
     }
   },
   "mappings" : {
-    "_default_" : {
-        "properties" : {
-          "CRTIME" : {
-            "type" : "long",
-            "doc_values": true
-          },
-          "PANDAID" : {
-            "type" : "long",
-            "doc_values": true
-          },
-          "CLOUD" : {
-            "type" : "string",
-            "analyzer" : "lowercase_whitespace"
-          },
-          "COMPUTINGSITE" : {
-            "type" : "string",
-            "analyzer" : "lowercase_whitespace"
-          },
-          "PRODSOURCELABEL" : {
-            "type" : "string",
-            "analyzer" : "lowercase_whitespace"
-          },
-          "SKIPPED" : {
-            "type" : "long",
-            "doc_values": true
-          },
-          "SORTED" : {
-            "type" : "long",
-            "doc_values": true
-          },
-          "times" : {
-            "type": "nested",
-            "properties": {
-              "state": {
-                "type": "string"
-              },
-              "time": {
-                "type": "long",
-                "doc_values": true
-              }
+    "_default_": {
+      "properties": {
+        "CRTIME": {
+          "type": "long",
+          "doc_values": true
+        },
+        "PANDAID": {
+          "type": "long",
+          "doc_values": true
+        },
+        "CLOUD": {
+          "type": "string",
+          "analyzer": "lowercase_whitespace"
+        },
+        "COMPUTINGSITE": {
+          "type": "string",
+          "analyzer": "lowercase_whitespace"
+        },
+        "PRODSOURCELABEL": {
+          "type": "string",
+          "analyzer": "lowercase_whitespace"
+        },
+        "SKIPPED": {
+          "type": "long",
+          "doc_values": true
+        },
+        "SORTED": {
+          "type": "long",
+          "doc_values": true
+        },
+        "times": {
+          "type": "nested",
+          "properties": {
+            "state": {
+              "type": "string"
+            },
+            "time": {
+              "type": "long",
+              "doc_values": true
+            }
           }
         }
       }
     }
+  }
 }
