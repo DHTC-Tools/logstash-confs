@@ -8,8 +8,9 @@ import datetime
 import glob
 import sys
 import re
-
+import argparse
 import pytz
+
 import elasticsearch
 from elasticsearch import helpers
 
@@ -94,5 +95,11 @@ def get_es_client():
     return client
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Load interval data from a directory into ES')
+    parser.add_argument('--location', dest='location', default=None,
+                        help='Location of directory to place submit files')
+    args = parser.parse_args(sys.argv[1:])
+    if args.location is None:
+        sys.stderr.write("location must be given\n")
     client = get_es_client()
-    load_data(directory, client)
+    load_data(args.location, client)
