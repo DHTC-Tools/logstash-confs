@@ -1,5 +1,5 @@
 {
-  "template" : "interval_data_20*",
+  "template" : "interval-data-20*",
   "settings" : {
     "analysis" : {
       "analyzer": {
@@ -18,8 +18,8 @@
     "_default_": {
       "properties": {
         "CRTIME": {
-          "type": "long",
-          "doc_values": true
+          "type" : "date",
+          "format" : "dateOptionalTime"
         },
         "PANDAID": {
           "type": "long",
@@ -56,6 +56,10 @@
               "doc_values": true
             }
           }
+        },
+        "@timestamp" : {
+          "type" : "date",
+          "format" : "dateOptionalTime"
         }
       }
     }
