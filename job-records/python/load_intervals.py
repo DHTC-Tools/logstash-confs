@@ -34,6 +34,7 @@ def save_records(es_client=None, records=None):
                  doc_type='interval_record',
                  stats_only=True)
 
+
 def load_data(directory, es_client):
     """
     Load data from a directory with interval data in files named
@@ -58,10 +59,11 @@ def load_data(directory, es_client):
                 save_records(es_client, records)
                 records = []
                 sys.stdout.write("Wrote {0} records\n".format(doc_count))
-        if records != []:
+        if not records:
             save_records(es_client, records)
             records = []
             sys.stdout.write("Wrote {0} records\n".format(doc_count))
+
 
 def parse_record(line):
     """
@@ -97,8 +99,7 @@ def parse_record(line):
 
 def get_es_client():
     """ Instantiate DB client and pass connection back """
-    client = elasticsearch.Elasticsearch(host=ES_HOST)
-    return client
+    return elasticsearch.Elasticsearch(host=ES_HOST)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Load interval data from a directory into ES')
