@@ -45,23 +45,23 @@ def load_data(directory, es_client):
     """
     if not os.path.isdir(directory):
         return
-    doc_count = 0
     records = []
     for filename in glob.glob(os.path.join(directory, "part-*")):
         sys.stdout.write("Loading {0} file\n".format(filename))
+        doc_count = 0
         for line in open(filename):
             record = parse_record(line)
             if record != {}:
                 records.append(record)
                 doc_count += 1
-            if (doc_count % 5000) == 0:
+            if (doc_count % 50000) == 0:
                 save_records(es_client, records)
                 records = []
-                sys.stdout.write("Wrote {0} records\n".format(doc_count))
+                sys.stdout.write("Wrote {0} records from {1}\n".format(doc_count, filename))
         if not records:
             save_records(es_client, records)
             records = []
-            sys.stdout.write("Wrote {0} records\n".format(doc_count))
+            sys.stdout.write("Wrote {0} records from {1}\n".format(doc_count, filename))
 
 
 def parse_record(line):
@@ -103,7 +103,7 @@ def parse_record(line):
 
 def get_es_client():
     """ Instantiate DB client and pass connection back """
-    return elasticsearch.Elasticsearch(host=ES_HOST)
+    return elasticsearch.Elasticsearch(hosts=ES_HOST,retry_on_timeout=True,max_retries=10,timeout=300)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Load interval data from a directory into ES')
