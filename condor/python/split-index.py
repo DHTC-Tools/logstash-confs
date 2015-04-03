@@ -51,7 +51,7 @@ def validate_date(arg):
         return None
     try:
         utc = pytz.utc
-        temp = utc.localize(datetime.date(year, month, day))
+        temp = utc.localize(datetime.datetime(year, month, day, 0, 0, 0))
     except ValueError:
         return None
     return temp
@@ -80,18 +80,19 @@ def reindex(source_index, target_index, start_date, end_date, client):
                     "must": [
                         {"range":
                              {"@timestamp":
-                                  {"gte": start_time,
-                                   "lt": end_time}}}]}}}}}
+                                  {"gte": start_time.isoformat(),
+                                   "lt": end_time.isoformat()}}}]}}}}}
     results = elasticsearch.helpers.reindex(client,
                                             source_index,
                                             target_index,
-                                            range_query)
+                                            range_query,
+                                            scroll='30m')
     return results
 
 
 def get_es_client():
     """ Instantiate DB client and pass connection back """
-    return elasticsearch.Elasticsearch(host=ES_NODES)
+    return elasticsearch.Elasticsearch(hosts=ES_NODES,retry_on_timeout=True,max_retries=10,timeout=300) 
 
 
 def scan_and_reindex(start_date=None, end_date=None, client=None):
@@ -107,16 +108,16 @@ def scan_and_reindex(start_date=None, end_date=None, client=None):
     current_date = get_start_week(start_date)
     while current_date < end_date:
         iso_year, iso_week, _ = current_date.isocalendar()
-        weekly_index = "{0}-{1}-{2}".format(SOURCE_INDEX,
-                                            iso_year,
-                                            iso_week)
-        end_date = current_date + datetime.timedelta(days=7)
+        weekly_index = "{0}-{1}-{2:0>2}".format('osg-connect-job-details',
+                                                iso_year,
+                                                iso_week)
+        week_end_date = current_date + datetime.timedelta(days=7)
         results = reindex(SOURCE_INDEX,
                           weekly_index,
                           current_date,
-                          end_date,
+                          week_end_date,
                           client)
-        logging.warning("0".format(results))
+        logging.warning("{0}".format(results))
         current_date += datetime.timedelta(days=7)
 
 
