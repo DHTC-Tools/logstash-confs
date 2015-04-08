@@ -22,7 +22,7 @@ JOB_STATUS = {0: 'Unexpanded',
               6: 'Submission Error'}
 JOB_ATTRS = ['ProcId',
              'ClusterId',
-             'GlobalJobId'
+             'GlobalJobId',
              'JobStatus', 
              'User', 
              'ProjectName', 
