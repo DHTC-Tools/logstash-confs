@@ -45,17 +45,21 @@
           "type": "long",
           "doc_values": true
         },
-        "times": {
-          "type": "nested",
-          "properties": {
-            "state": {
-              "type": "string"
-            },
-            "time": {
-              "type": "long",
-              "doc_values": true
-            }
-          }
+        "starting_time": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "holding_time": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "running_time": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "sent_time": {
+          "type" : "long",
+          "doc_values": true
         },
         "@timestamp" : {
           "type" : "date",
