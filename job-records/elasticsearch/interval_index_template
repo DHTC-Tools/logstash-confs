@@ -101,6 +101,14 @@
           "type" : "long",
           "doc_values": true
         },
+        "activated_time": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "defined_time": {
+          "type" : "long",
+          "doc_values": true
+        },
         "@timestamp" : {
           "type" : "date",
           "format" : "dateOptionalTime"
