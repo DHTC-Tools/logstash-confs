@@ -65,6 +65,14 @@
             "type" : "string",
             "analyzer" : "lowercase_whitespace"
           },
+          "client_location" : {
+           "type" : "object",
+             "dynamic": true,
+             "path": "full",
+             "properties" : {
+               "location" : { "type" : "geo_point" }
+             }
+          },
           "result_code" : {
             "type" : "long",
             "doc_values": true
