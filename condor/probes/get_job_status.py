@@ -22,7 +22,7 @@ JOB_STATUS = {0: 'Unexpanded',
               6: 'Submission Error'}
 JOB_ATTRS = ['ProcId',
              'ClusterId',
-             'GlobalJobId'
+             'GlobalJobId',
              'JobStatus', 
              'User', 
              'ProjectName', 
@@ -121,9 +121,7 @@ def save_collector_status(client, record, host, time):
 
 def get_es_client():
     """ Instantiate DB client and pass connection back """
-
-    client = elasticsearch.Elasticsearch(host=ES_HOST)
-    return client
+    return elasticsearch.Elasticsearch(hosts=ES_HOST,retry_on_timeout=True,max_retries=10,timeout=90)
 
 if __name__ == '__main__':
     es_client = get_es_client()

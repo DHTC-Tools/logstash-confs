@@ -12,13 +12,14 @@ import argparse
 import pytz
 import logging
 import json
+import time
 
 import elasticsearch
 from elasticsearch import helpers
 
 VERSION = '0.2'
 TZ_NAME = 'UTC'
-ES_HOST = 'uct2-es-door.mwt2.org'
+ES_HOST = ['uct2-es-door.mwt2.org', 'uct2-es-head.mwt2.org']
 TIMEZONE = pytz.timezone(TZ_NAME)
 
 
@@ -30,9 +31,7 @@ def save_records(es_client=None, records=None):
         return
     helpers.bulk(es_client,
                  records,
-                 index="interval-data-2014-32",
-                 doc_type='interval_record',
-                 stats_only=True)
+                 stats_only=False)
 
 
 def load_data(directory, es_client):
@@ -46,10 +45,10 @@ def load_data(directory, es_client):
     """
     if not os.path.isdir(directory):
         return
-    doc_count = 0
     records = []
     for filename in glob.glob(os.path.join(directory, "part-*")):
         sys.stdout.write("Loading {0} file\n".format(filename))
+        doc_count = 0
         for line in open(filename):
             record = parse_record(line)
             if record != {}:
@@ -58,11 +57,11 @@ def load_data(directory, es_client):
             if (doc_count % 50000) == 0:
                 save_records(es_client, records)
                 records = []
-                sys.stdout.write("Wrote {0} records\n".format(doc_count))
+                sys.stdout.write("Wrote {0} records from {1}\n".format(doc_count, filename))
         if not records:
             save_records(es_client, records)
             records = []
-            sys.stdout.write("Wrote {0} records\n".format(doc_count))
+            sys.stdout.write("Wrote {0} records from {1}\n".format(doc_count, filename))
 
 
 def parse_record(line):
@@ -75,31 +74,36 @@ def parse_record(line):
     """
 
     record = {}
+    record_fields = {}
     fields = line.split("\t")
     event_time = datetime.datetime.fromtimestamp(float(fields[0])/1000.0,
                                                  TIMEZONE)
-    record['@timestamp'] = event_time.isoformat()
-    record['CRTIME'] = event_time.isoformat()
-    record['PANDAID'] = int(fields[1])
-    record['CLOUD'] = fields[2].strip()
-    record['COMPUTINGSITE'] = fields[3].strip()
-    record['PRODSOURCELABEL'] = fields[4].strip()
+    record_fields['@timestamp'] = event_time.isoformat()
+    record_fields['CRTIME'] = event_time.isoformat()
+    record_fields['PANDAID'] = int(fields[1])
+    record_fields['CLOUD'] = fields[2].strip()
+    record_fields['COMPUTINGSITE'] = fields[3].strip()
+    record_fields['PRODSOURCELABEL'] = fields[4].strip()
     raw_times = fields[5]
-    record['times'] = []
+    times = []
     if raw_times != '{}':
         for x in re.finditer('\((\w+),(\d+)\)', raw_times):
-            record['times'].append({'state': x.group(1).strip(),
+            times.append({'state': x.group(1).strip(),
                                     'time': x.group(2)})
-    record['SKIPPED'] = int(fields[6])
-    record['SORTED'] = int(fields[7].strip())
+    record_fields['times'] = times
+    record_fields['SKIPPED'] = int(fields[6])
+    record_fields['SORTED'] = int(fields[7].strip())
     year, iso_week, _ = event_time.isocalendar()
-    record['_index'] = "interval-data-{0}-{1}".format(year, iso_week)
+    record['_index'] = "interval-data-{0}-{1:0>2}".format(year, iso_week)
+    record['_source'] = record_fields
+    record['_op_type'] = 'index'
+    record['_type']  = 'interval_record'
     return record
 
 
 def get_es_client():
     """ Instantiate DB client and pass connection back """
-    return elasticsearch.Elasticsearch(host=ES_HOST)
+    return elasticsearch.Elasticsearch(hosts=ES_HOST,retry_on_timeout=True,max_retries=10,timeout=300)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Load interval data from a directory into ES')

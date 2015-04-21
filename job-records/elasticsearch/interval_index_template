@@ -45,17 +45,69 @@
           "type": "long",
           "doc_values": true
         },
-        "times": {
-          "type": "nested",
-          "properties": {
-            "state": {
-              "type": "string"
-            },
-            "time": {
-              "type": "long",
-              "doc_values": true
-            }
-          }
+        "activated_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "assigned_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "cancelled_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "defined_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "failed_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "finished_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "holding_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "merging_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "pending_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "running_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "sent_time" : {
+          "type" : "long",
+          "doc_values" : true
+        },
+        "starting_time" : {
+          "type" : "long",
+          "doc_values" : true
+        },
+        "transferring_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "waiting_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "activated_time": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "defined_time": {
+          "type" : "long",
+          "doc_values": true
         },
         "@timestamp" : {
           "type" : "date",
