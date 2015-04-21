@@ -113,7 +113,7 @@
             "doc_values": true
           },
           "created" : {
-            "type" : "string",
+            "type" : "string"
           },
           "protocol" : {
             "type" : "string",
