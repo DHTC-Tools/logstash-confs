@@ -595,6 +595,9 @@
           "type" : "long",
           "doc_values": true
         },
+        "Chirp_StashCp_DLStart": {
+          "type" : "string"
+        },
         "@timestamp" : {
           "type" : "date",
           "format" : "dateOptionalTime"
