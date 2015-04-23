@@ -85,12 +85,9 @@ def parse_record(line):
     record_fields['COMPUTINGSITE'] = fields[3].strip()
     record_fields['PRODSOURCELABEL'] = fields[4].strip()
     raw_times = fields[5]
-    times = []
     if raw_times != '{}':
         for x in re.finditer('\((\w+),(\d+)\)', raw_times):
-            times.append({'state': x.group(1).strip(),
-                                    'time': x.group(2)})
-    record_fields['times'] = times
+            record_fields["{0}_time".format(x.group(1).strip())] = x.group(2)
     record_fields['SKIPPED'] = int(fields[6])
     record_fields['SORTED'] = int(fields[7].strip())
     year, iso_week, _ = event_time.isocalendar()
