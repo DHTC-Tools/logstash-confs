@@ -32,7 +32,11 @@
           "type" : "long",
           "doc_values": true
         },
-        "BlockWritesKbytes" : {
+        "BlockWriteKbytes" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BlockWriteKbytes" : {
           "type" : "long",
           "doc_values": true
         },
@@ -575,6 +579,22 @@
           "type" : "long",
           "doc_values": true
         },
+        "pegasus_job_runtime": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "pegasus_cores": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "pegasus_job_class": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "pegasus_cluster_size": {
+          "type" : "long",
+          "doc_values": true
+        },
         "DAGManJobId" : {
           "type" : "long",
           "doc_values": true
@@ -591,6 +611,42 @@
           "type" : "string",
           "analyzer" : "lowercase_whitespace"
         },
+        "DAG_NodesDone" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesUnready" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesQueued" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesPrerun" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesReady" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesFailed" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_Status" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesTotal" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_InRecovery" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "KeepClaimIdle" : {
           "type" : "long",
           "doc_values": true
@@ -604,6 +660,7 @@
         "Chirp_StashCp_FileSize": {
           "type" : "string"
         },
+
         "@timestamp" : {
           "type" : "date",
           "format" : "dateOptionalTime"
