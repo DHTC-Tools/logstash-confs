@@ -680,6 +680,10 @@
         "Chirp_StashCp_FileSize": {
           "type" : "string"
         },
+        "JobPid" : {
+          "type" : "long",
+          "doc_values": true
+        },
 
         "@timestamp" : {
           "type" : "date",
