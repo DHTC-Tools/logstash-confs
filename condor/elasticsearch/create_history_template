@@ -56,6 +56,10 @@
           "type" : "long",
           "doc_values": true
         },
+        "RecentBlockWriteKbytes" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "RecentBlockWrites" : {
           "type" : "long",
           "doc_values": true
@@ -65,6 +69,14 @@
           "doc_values": true
         },
         "StatsLifetimeStarter" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "StatsLifetime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RecentStatsLifetime" : {
           "type" : "long",
           "doc_values": true
         },
@@ -272,7 +284,7 @@
           "type" : "string",
           "analyzer" : "lowercase_whitespace"
         },
-        "NumSystemHolds" : {
+        "NumPids" : {
           "type" : "long",
           "doc_values": true
         },
@@ -579,6 +591,10 @@
           "type" : "long",
           "doc_values": true
         },
+        "JobDuration" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "pegasus_job_runtime": {
           "type" : "long",
           "doc_values": true
@@ -624,6 +640,10 @@
           "doc_values": true
         },
         "DAG_NodesPrerun" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesPostrun" : {
           "type" : "long",
           "doc_values": true
         },
