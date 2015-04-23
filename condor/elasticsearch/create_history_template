@@ -598,6 +598,9 @@
         "Chirp_StashCp_DLStart": {
           "type" : "string"
         },
+        "Chirp_StashCp_DLTimeMs": {
+          "type" : "string"
+        },
         "@timestamp" : {
           "type" : "date",
           "format" : "dateOptionalTime"
