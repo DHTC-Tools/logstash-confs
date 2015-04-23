@@ -11,7 +11,7 @@
       }
     },
     "index" : {
-        "number_of_replicas" : 0
+        "number_of_replicas" : 3
     }
   },
   "mappings" : {
@@ -32,7 +32,11 @@
           "type" : "long",
           "doc_values": true
         },
-        "BlockWritesKbytes" : {
+        "BlockWriteKbytes" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "BlockWriteKbytes" : {
           "type" : "long",
           "doc_values": true
         },
@@ -52,6 +56,10 @@
           "type" : "long",
           "doc_values": true
         },
+        "RecentBlockWriteKbytes" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "RecentBlockWrites" : {
           "type" : "long",
           "doc_values": true
@@ -61,6 +69,14 @@
           "doc_values": true
         },
         "StatsLifetimeStarter" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "StatsLifetime" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "RecentStatsLifetime" : {
           "type" : "long",
           "doc_values": true
         },
@@ -268,7 +284,7 @@
           "type" : "string",
           "analyzer" : "lowercase_whitespace"
         },
-        "NumSystemHolds" : {
+        "NumPids" : {
           "type" : "long",
           "doc_values": true
         },
@@ -575,6 +591,26 @@
           "type" : "long",
           "doc_values": true
         },
+        "JobDuration" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "pegasus_job_runtime": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "pegasus_cores": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "pegasus_job_class": {
+          "type" : "long",
+          "doc_values": true
+        },
+        "pegasus_cluster_size": {
+          "type" : "long",
+          "doc_values": true
+        },
         "DAGManJobId" : {
           "type" : "long",
           "doc_values": true
@@ -591,10 +627,64 @@
           "type" : "string",
           "analyzer" : "lowercase_whitespace"
         },
+        "DAG_NodesDone" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesUnready" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesQueued" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesPrerun" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesPostrun" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesReady" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesFailed" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_Status" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_NodesTotal" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "DAG_InRecovery" : {
+          "type" : "long",
+          "doc_values": true
+        },
         "KeepClaimIdle" : {
           "type" : "long",
           "doc_values": true
         },
+        "Chirp_StashCp_DLStart": {
+          "type" : "string"
+        },
+        "Chirp_StashCp_DLTimeMs": {
+          "type" : "string"
+        },
+        "Chirp_StashCp_FileSize": {
+          "type" : "string"
+        },
+        "JobPid" : {
+          "type" : "long",
+          "doc_values": true
+        },
+
         "@timestamp" : {
           "type" : "date",
           "format" : "dateOptionalTime"

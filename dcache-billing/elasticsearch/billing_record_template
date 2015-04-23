@@ -11,7 +11,7 @@
       }
     },
     "index" : {
-        "number_of_replicas" : 0
+        "number_of_replicas" : 3
     }
   },
   "mappings" : {
@@ -65,6 +65,14 @@
             "type" : "string",
             "analyzer" : "lowercase_whitespace"
           },
+          "client_location" : {
+           "type" : "object",
+             "dynamic": true,
+             "path": "full",
+             "properties" : {
+               "location" : { "type" : "geo_point" }
+             }
+          },
           "result_code" : {
             "type" : "long",
             "doc_values": true
@@ -113,7 +121,7 @@
             "doc_values": true
           },
           "created" : {
-            "type" : "string",
+            "type" : "string"
           },
           "protocol" : {
             "type" : "string",

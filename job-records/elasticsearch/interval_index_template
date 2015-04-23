@@ -45,19 +45,59 @@
           "type": "long",
           "doc_values": true
         },
-        "starting_time": {
+        "activated_time" : {
           "type" : "long",
           "doc_values": true
         },
-        "holding_time": {
+        "assigned_time" : {
           "type" : "long",
           "doc_values": true
         },
-        "running_time": {
+        "cancelled_time" : {
           "type" : "long",
           "doc_values": true
         },
-        "sent_time": {
+        "defined_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "failed_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "finished_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "holding_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "merging_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "pending_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "running_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "sent_time" : {
+          "type" : "long",
+          "doc_values" : true
+        },
+        "starting_time" : {
+          "type" : "long",
+          "doc_values" : true
+        },
+        "transferring_time" : {
+          "type" : "long",
+          "doc_values": true
+        },
+        "waiting_time" : {
           "type" : "long",
           "doc_values": true
         },
