@@ -82,6 +82,7 @@ def reindex(source_index, target_index, start_date, end_date, client):
                              {"@timestamp":
                                   {"gte": start_time.isoformat(),
                                    "lt": end_time.isoformat()}}}]}}}}}
+    sys.stdout.write("Reindexing into {0}\n".format(target_index))
     results = elasticsearch.helpers.reindex(client,
                                             source_index,
                                             target_index,
