@@ -67,7 +67,8 @@ def traverse_directory(dirpath, index=None):
     :param dirpath: path to directory to
     :return: Nothing
     """
-    current_date = TIMEZONE.localize(datetime.date.today())
+    current_date = TIMEZONE.localize(datetime.combine(datetime.date.today(),
+                                                      datetime.time(0, 0, 0)))
 
     if not os.path.isdir(dirpath):
         return
