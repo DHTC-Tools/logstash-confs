@@ -58,7 +58,7 @@ def create_record(dirpath, num_files, date, index=None):
     record = {'_index': index,
               '_source': record_fields,
               '_op_type': 'index',
-              '_type': 'interval_record'}
+              '_type': 'space_usage_record'}
     return record
 
 
