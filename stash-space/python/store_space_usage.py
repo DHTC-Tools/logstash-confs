@@ -41,7 +41,7 @@ def create_record(dirpath, num_files, date, index=None):
     if not os.path.isdir(dirpath):
         return {}
     if not index:
-        index = "stash-space-{0}".format(date.year, date.month)
+        index = "stash-space-{0}-{1:0>2}".format(date.year, date.month)
     dir_info = os.stat(dirpath)
     uid = dir_info.st_uid
     gid = dir_info.st_gid
@@ -52,8 +52,8 @@ def create_record(dirpath, num_files, date, index=None):
                      'num_files': num_files,
                      'ctime': ctime,
                      'mtime': mtime,
-                     'user': pwd.getpwuid(uid),
-                     'group': grp.getgrgid(gid),
+                     'user': pwd.getpwuid(uid).pw_name,
+                     'group': grp.getgrgid(gid).gr_name,
                      'path': dirpath}
     record = {'_index': index,
               '_source': record_fields,
@@ -69,8 +69,8 @@ def traverse_directory(dirpath, index=None):
     :param dirpath: path to directory to
     :return: Nothing
     """
-    current_date = TIMEZONE.localize(datetime.combine(datetime.date.today(),
-                                                      datetime.time(0, 0, 0)))
+    current_date = TIMEZONE.localize(datetime.datetime.combine(datetime.date.today(),
+                                                               datetime.time(0, 0, 0)))
 
     if not os.path.isdir(dirpath):
         return
