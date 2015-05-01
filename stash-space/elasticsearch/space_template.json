@@ -1,0 +1,48 @@
+{
+  "template" : "stash-space-20*",
+  "settings" : {
+    "analysis" : {
+      "analyzer": {
+        "path-analyzer": {
+          "type": "custom",
+          "tokenizer":  "path-tokenizer"
+        }
+      }
+    },
+    "index" : {
+        "number_of_replicas" : 3
+    }
+  },
+  "mappings" : {
+    "_default_": {
+      "properties": {
+        "mtime": {
+          "type" : "date",
+          "format" : "dateOptionalTime"
+        },
+        "ctime": {
+          "type" : "date",
+          "format" : "dateOptionalTime"
+        },
+        "size": {
+          "type": "long",
+          "doc_values": true
+        },
+        "path": {
+          "type": "string",
+          "analyzer": "path-analyzer"
+        },
+        "user": {
+          "type": "string"
+        },
+        "group": {
+          "type": "string"
+        },
+        "@timestamp" : {
+          "type" : "date",
+          "format" : "dateOptionalTime"
+        }
+      }
+    }
+  }
+}

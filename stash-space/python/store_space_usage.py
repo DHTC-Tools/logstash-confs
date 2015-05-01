@@ -17,6 +17,7 @@ import elasticsearch.helpers
 
 ES_NODES = ['uct2-es-head.mwt2.org:9200', 'uct2-es-door.mwt2.org:9200']
 TZ_NAME = "US/Central"
+TIMEZONE = pytz.timezone(TZ_NAME)
 
 
 def get_es_client():
@@ -43,10 +44,12 @@ def create_record(dirpath, date, index=None):
     dir_info = os.stat(filepath)
     uid = dir_info.st_uid
     gid = dir_info.st_gid
+    ctime = datetime.datetime.fromtimestamp(dir_info.st_ctime, TIMEZONE)
+    mtime = datetime.datetime.fromtimestamp(dir_info.st_mtime, TIMEZONE)
     record_fields = {'@timestamp': date.isoformat(),
                      'size': dir_info.st_size,
-                     'ctime': dir_info.st_ctime,
-                     'mtime': dir_info.st_mtime,
+                     'ctime': ctime,
+                     'mtime': mtime,
                      'user': pwd.getpwuid(uid),
                      'group': grp.getgrgid(gid),
                      'path': dirpath}
@@ -64,7 +67,6 @@ def traverse_directory(dirpath, index=None):
     :param dirpath: path to directory to
     :return: Nothing
     """
-    timezone = pytz.timezone(TZ_NAME)
     current_date = timezone.localize(datetime.date.today())
 
     if not os.path.isdir(dirpath):
