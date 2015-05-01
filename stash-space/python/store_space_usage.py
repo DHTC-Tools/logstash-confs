@@ -22,7 +22,7 @@ TIMEZONE = pytz.timezone(TZ_NAME)
 
 def get_es_client():
     """ Instantiate DB client and pass connection back """
-    return elasticsearch.Elasticsearch(hosts=ES_HOST,
+    return elasticsearch.Elasticsearch(hosts=ES_NODES,
                                        retry_on_timeout=True,
                                        max_retries=10,
                                        timeout=300)
@@ -41,7 +41,7 @@ def create_record(dirpath, date, index=None):
         return {}
     if not index:
         index = "stash-space-{0}".format(date.year, date.month)
-    dir_info = os.stat(filepath)
+    dir_info = os.stat(dirpath)
     uid = dir_info.st_uid
     gid = dir_info.st_gid
     ctime = datetime.datetime.fromtimestamp(dir_info.st_ctime, TIMEZONE)
@@ -67,7 +67,7 @@ def traverse_directory(dirpath, index=None):
     :param dirpath: path to directory to
     :return: Nothing
     """
-    current_date = timezone.localize(datetime.date.today())
+    current_date = TIMEZONE.localize(datetime.date.today())
 
     if not os.path.isdir(dirpath):
         return
@@ -96,6 +96,6 @@ if __name__ == "__main__":
                         help="Directory to examine")
     args = parser.parse_args(sys.argv[1:])
     if not os.path.isdir(args.directory):
-        sys.stderr.write("{0} must be a directory\n".format(atgs.directory))
+        sys.stderr.write("{0} must be a directory\n".format(args.directory))
         sys.exit(1)
     traverse_directory(args.directory, args.index)
