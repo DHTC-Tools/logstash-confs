@@ -52,8 +52,8 @@ def create_record(dirpath, num_files, date, index=None):
                      'num_files': num_files,
                      'ctime': ctime,
                      'mtime': mtime,
-                     'user': pwd.getpwuid(uid),
-                     'group': grp.getgrgid(gid),
+                     'user': pwd.getpwuid(uid).pw_name,
+                     'group': grp.getgrgid(gid).gr_name,
                      'path': dirpath}
     record = {'_index': index,
               '_source': record_fields,
