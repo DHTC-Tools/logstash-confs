@@ -28,6 +28,10 @@
           "type": "long",
           "doc_values": true
         },
+        "num_files": {
+          "type": "long",
+          "doc_values": true
+        },
         "path": {
           "type": "string",
           "analyzer": "path-analyzer"
