@@ -28,11 +28,12 @@ def get_es_client():
                                        timeout=300)
 
 
-def create_record(dirpath, date, index=None):
+def create_record(dirpath, num_files, date, index=None):
     """
     Query directory at dirpath for information and store information in ES
 
     :param dirpath: string storing path to file
+    :parm num_files: number of files present in dirpath
     :param date: datetime.date with date to use
     :param inde: ES index for records
     :return: dictionary with record if successful, empty dict otherwise
@@ -48,6 +49,7 @@ def create_record(dirpath, date, index=None):
     mtime = datetime.datetime.fromtimestamp(dir_info.st_mtime, TIMEZONE)
     record_fields = {'@timestamp': date.isoformat(),
                      'size': dir_info.st_size,
+                     'num_files': num_files,
                      'ctime': ctime,
                      'mtime': mtime,
                      'user': pwd.getpwuid(uid),
@@ -74,7 +76,7 @@ def traverse_directory(dirpath, index=None):
         return
     records = []
     for root, dirs, files in os.walk(dirpath):
-        record = create_record(root, current_date, index)
+        record = create_record(root, len(files), current_date, index)
         if record:
             records.append(record)
     save_records(records)
