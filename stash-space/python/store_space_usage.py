@@ -93,7 +93,7 @@ if __name__ == "__main__":
                                                  'filesystem and store in ES')
     parser.add_argument('--index', dest='index', default=None,
                         help='ES index to store records in')
-    parser.add_argument("directory", default=None, required=True,
+    parser.add_argument("directory", default=None, 
                         help="Directory to examine")
     args = parser.parse_args(sys.argv[1:])
     if not os.path.isdir(args.directory):
