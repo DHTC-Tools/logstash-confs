@@ -2,7 +2,6 @@
 
 import sys
 import datetime
-import time
 import argparse
 import logging
 import csv
@@ -14,6 +13,7 @@ import elasticsearch.helpers
 
 ES_NODES = ['uct2-es-head.mwt2.org:9200', 'uct2-es-door.mwt2.org:9200']
 TZ_NAME = "UTC"
+
 
 def parse_date(date=None):
     """

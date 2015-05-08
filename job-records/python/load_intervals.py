@@ -94,7 +94,7 @@ def parse_record(line):
     record['_index'] = "interval-data-{0}-{1:0>2}".format(year, iso_week)
     record['_source'] = record_fields
     record['_op_type'] = 'index'
-    record['_type']  = 'interval_record'
+    record['_type'] = 'interval_record'
     return record
 
 

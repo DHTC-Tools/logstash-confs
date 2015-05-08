@@ -149,4 +149,4 @@ def watch_history_file():
 
 
 if __name__ == "__main__":
-   watch_history_file() 
+    watch_history_file()
