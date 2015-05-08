@@ -15,7 +15,7 @@ import pymongo
 
 MONGO_SERVER = 'db.mwt2.org'
 MONGO_SERVER_PORT = 27017
-ES_NODES = 'uct2-es-door.mwt2.org'
+ES_NODES = ['uct2-es-door.mwt2.org', 'uct2-es-head.mwt2.org']
 VERSION = '0.1'
 
 
@@ -38,7 +38,10 @@ def get_es_client():
 
     :return: Elasticsearch client instance
     """
-    return elasticsearch.Elasticsearch(ES_NODES)
+    return elasticsearch.Elasticsearch(hosts=ES_NODES,
+                                       retry_on_timeout=True,
+                                       max_retries=10,
+                                       timeout=300)
 
 
 def get_month_records(year=2014, month=None, db=None):
