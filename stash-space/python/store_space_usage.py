@@ -50,13 +50,21 @@ def create_record(dirpath, num_files, date, dir_size=None,
     gid = dir_info.st_gid
     ctime = datetime.datetime.fromtimestamp(dir_info.st_ctime, TIMEZONE)
     mtime = datetime.datetime.fromtimestamp(dir_info.st_mtime, TIMEZONE)
+    try:
+       group = grp.getgrgid(gid).gr_name
+    except KeyError:
+       group = gid
+    try:
+       user = pwd.getpwuid(uid).pw_name
+    except KeyError:
+       user = uid
     record_fields = {'@timestamp': date.isoformat(),
                      'size': dir_size,
                      'num_files': num_files,
-                     'ctime': ctime,
-                     'mtime': mtime,
-                     'user': pwd.getpwuid(uid).pw_name,
-                     'group': grp.getgrgid(gid).gr_name,
+                     'ctime': ctime.isoformat(),
+                     'mtime': mtime.isoformat(),
+                     'user': user,
+                     'group': group,
                      'path': dirpath}
     record = {'_index': index,
               '_source': record_fields,
@@ -88,13 +96,16 @@ def get_dir_size(root, dir_sizes, inodes):
     entries = os.listdir(root)
     for entry in entries:
         entry_name = os.path.join(root, entry)
-        inode = os.stat(entry_name).st_ino
-        if inode in inodes:
+        try:
+            entry_stat = os.stat(entry_name)
+        except OSError:
+            continue
+        if entry_stat.st_ino in inodes:
             continue
         if os.path.isfile(entry_name) and not os.path.islink(entry_name):
             try:
-                total_size += os.stat(entry_name).st_size
-                inodes.add(inode)
+                total_size += entry_stat.st_size
+                inodes.add(entry_stat.st_ino)
             except OSError:
                 continue
         elif os.path.isdir(entry_name) and not os.path.islink(entry_name):
@@ -102,8 +113,12 @@ def get_dir_size(root, dir_sizes, inodes):
                 total_size += dir_sizes[entry_name]
                 continue
             dir_size = get_dir_size(entry_name, dir_sizes, inodes)
+            dir_size += entry_stat.st_size
             dir_sizes[entry_name] = dir_size
-            inodes.add(inode)
+            total_size += dir_size
+            inodes.add(entry_stat.st_ino)
+    total_size += os.stat(root).st_size
+    dir_sizes[root] = total_size
     return total_size
 
 
@@ -144,7 +159,7 @@ def save_records(records=None):
     Save a job record to ES
     """
     es_client = get_es_client()
-    elasticsearch.helpers.bulk(es_client,
+    print elasticsearch.helpers.bulk(es_client,
                                records,
                                stats_only=False)
 
@@ -154,7 +169,7 @@ if __name__ == "__main__":
     parser.add_argument('--index', dest='index', default=None,
                         help='ES index to store records in')
     parser.add_argument('--is-ceph', dest='ceph_fs', default=False,
-                        type=bool, action='store_true',
+                        action='store_true',
                         help='Is the directory a CephFS directory?')
     parser.add_argument("directory", default=None,
                         help="Directory to examine")
