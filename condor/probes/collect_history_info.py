@@ -5,6 +5,7 @@ import os
 import json
 import re
 import cStringIO
+import argparse
 
 import redis
 
@@ -41,6 +42,7 @@ def publish_classad(classad, channel, redis_client):
     Publishes a classad to a Redis pub/sub channel
 
     :param classad: dictionary representing classad to publish
+    :param channel: channel to publish to
     :param redis_client: a redis client instance to use
     :return: None
     """
@@ -50,13 +52,16 @@ def publish_classad(classad, channel, redis_client):
     return
 
 
-def get_redis_client():
+def get_redis_client(server=None):
     """
     Get a redis client instance and return it
 
+    :param server: hostname of the Redis server to use
     :return: a redis client instance or None if failure occurs
     """
-    return redis.StrictRedis(REDIS_SERVER)
+    if server is None:
+        return None
+    return redis.StrictRedis(server)
 
 
 # used in parse_classad
@@ -114,20 +119,22 @@ def parse_classad(buff):
     return classads, remaining_buffer
 
 
-def watch_history_file():
+def watch_history_file(server=None, channel=None):
     """
     Function that has a loop that watches for changes to condor
     history log files and reads from it when changes occur
 
+    :param server: hostname of Redis server to use
+    :param channel: Redis channel to use
     :return: None
     """
     while (not os.path.exists(CONDOR_HISTORY_LOG) or
-               not os.path.isfile(CONDOR_HISTORY_LOG)):
+           not os.path.isfile(CONDOR_HISTORY_LOG)):
         time.sleep(POLL_INTERVAL)
     log_file = open(CONDOR_HISTORY_LOG)
     file_stat = os.stat(CONDOR_HISTORY_LOG)
     current_inode = file_stat.st_ino
-    client = get_redis_client()
+    client = get_redis_client(server)
     buff = ""
     while True:
         where = log_file.tell()
@@ -145,8 +152,16 @@ def watch_history_file():
             classads, buff = parse_classad(buff)
             if classads:
                 for classad in classads:
-                    publish_classad(classad, REDIS_CHANNEL, client)
+                    publish_classad(classad, channel, client)
 
 
 if __name__ == "__main__":
-    watch_history_file()
+    parser = argparse.ArgumentParser(description='Create a condor submit file '
+                                                 'for processing job log data.')
+    parser.add_argument('--channel', dest='channel', default=REDIS_CHANNEL,
+                        help='Redis channel to publish updates to')
+    parser.add_argument('--server', dest='server', default=REDIS_SERVER,
+                        help='Redis server to use')
+
+    args = parser.parse_args(sys.argv[1:])
+    watch_history_file(args.server, args.channel)
