@@ -1,0 +1,3 @@
+# Cron job running by default every minute
+* * * * *  /usr/bin/get_job_status.py --schedd-index-base osg-connect-schedd-state --job-index-base osg-connect-job-details
+

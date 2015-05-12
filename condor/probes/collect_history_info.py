@@ -6,6 +6,7 @@ import json
 import re
 import cStringIO
 import argparse
+import sys
 
 import redis
 
@@ -162,6 +163,5 @@ if __name__ == "__main__":
                         help='Redis channel to publish updates to')
     parser.add_argument('--server', dest='server', default=REDIS_SERVER,
                         help='Redis server to use')
-
     args = parser.parse_args(sys.argv[1:])
     watch_history_file(args.server, args.channel)
