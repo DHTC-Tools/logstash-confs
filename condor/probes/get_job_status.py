@@ -48,7 +48,7 @@ def get_timezone():
         for line in open('/etc/sysconfig/clock'):
             field, value = line.split('=')
             if field.strip() == 'ZONE':
-                return value.strip()
+                return value.replace('"', '').strip()
         return ""
     except IOError:
         return ""
@@ -65,7 +65,7 @@ def query_scheduler(schedd_index_base, job_detail_index_base):
     client = get_es_client()
     if not client:
         return
-    if not schedd_index_base or job_detail_index_base:
+    if not (schedd_index_base and job_detail_index_base):
         return
     schedd = htcondor.Schedd()
     jobs = schedd.query("True", JOB_ATTRS)
@@ -104,6 +104,7 @@ def query_scheduler(schedd_index_base, job_detail_index_base):
         if current_host is None:
             current_host = submit_host
         job_records.append(job_record)
+
     save_job_records(client, job_detail_index_base, job_records)
     save_collector_status(client,
                           schedd_index_base,
@@ -120,14 +121,15 @@ def save_job_records(client=None, index_base=None, records=None):
     :param index_base: base for index name
     :param records: list of records to insert into ES index
     """
-    if client is None or records is None or records == []:
+    if not (client and records and records):
         return
-    if index_base is None:
+    if not index_base:
         index_base = ES_JOB_DETAILS_INDEX_BASE
     timezone = pytz.timezone(get_timezone())
     current_time = timezone.localize(datetime.datetime.now())
     year, week, _ = current_time.isocalendar()
     index_name = '{0}-{1}-{2}'.format(index_base, year, week)
+    print index_name
     helpers.bulk(client,
                  records,
                  index=index_name,
@@ -144,9 +146,9 @@ def save_collector_status(client, index_base=None, record=None, host=None, time=
     :param host: hostname of the schedd that is being queried
     :param time: timestamp for document
     """
-    if client is None or record is None or record == {}:
+    if not (client and record and record):
         return
-    if index_base is None:
+    if not index_base:
         index_base = ES_SCHEDD_STATE_INDEX_BASE
     timezone = pytz.timezone(get_timezone())
     current_time = timezone.localize(datetime.datetime.now())
@@ -157,6 +159,7 @@ def save_collector_status(client, index_base=None, record=None, host=None, time=
                      'status': status,
                      'host': host,
                      '@timestamp': time}
+        print index_name
         client.index(index=index_name, doc_type='schedd_status', body=es_record)
 
 
@@ -179,6 +182,5 @@ if __name__ == '__main__':
                         help='Base name to use for indexing job history data')
 
     args = parser.parse_args(sys.argv[1:])
-
     es_client = get_es_client()
     query_scheduler(args.schedd_index_base, args.job_index_base)
