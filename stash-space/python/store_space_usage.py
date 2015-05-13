@@ -125,9 +125,9 @@ def get_top_level_info(dirpath):
         if not os.path.isdir(full_path):
             continue
         dir_info['name'] = full_path
-        dir_info['files'] = int(xattr.getxattr('/stash/user/sthapa',
+        dir_info['files'] = int(xattr.getxattr(full_path,
                                                'ceph.dir.rfiles')[:-1])
-        dir_info['size'] = int(xattr.getxattr('/stash/user/sthapa',
+        dir_info['size'] = int(xattr.getxattr(full_path,
                                               'ceph.dir.rbytes')[:-1])
         directories.append(dir_info)
     for entry in os.listdir(os.path.join(dirpath, 'project/')):
@@ -135,9 +135,9 @@ def get_top_level_info(dirpath):
         if not os.path.isdir(full_path):
             continue
         dir_info['name'] = full_path
-        dir_info['files'] = int(xattr.getxattr('/stash/user/sthapa',
+        dir_info['files'] = int(xattr.getxattr(full_path,
                                                'ceph.dir.rfiles')[:-1])
-        dir_info['size'] = int(xattr.getxattr('/stash/user/sthapa',
+        dir_info['size'] = int(xattr.getxattr(full_path,
                                               'ceph.dir.rbytes')[:-1])
         directories.append(dir_info)
 
