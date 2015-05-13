@@ -125,8 +125,13 @@ def get_top_level_info(dirpath):
         if not os.path.isdir(full_path):
             continue
         dir_info['name'] = full_path
-        dir_info['files'] = int(xattr.getxattr(full_path,
-                                               'ceph.dir.rfiles')[:-1])
+        num_files = xattr.getxattr(full_path, 'ceph.dir.rfiles').strip()
+        # xattr occasionally returns an empty entry
+        if num_files == '':
+            dir_info['files'] = 0
+            dir_info['size'] = 0
+            directories.append(dir_info)
+        dir_info['files'] = num_files[:-1]
         dir_info['size'] = int(xattr.getxattr(full_path,
                                               'ceph.dir.rbytes')[:-1])
         directories.append(dir_info)
@@ -135,8 +140,13 @@ def get_top_level_info(dirpath):
         if not os.path.isdir(full_path):
             continue
         dir_info['name'] = full_path
-        dir_info['files'] = int(xattr.getxattr(full_path,
-                                               'ceph.dir.rfiles')[:-1])
+        num_files = xattr.getxattr(full_path, 'ceph.dir.rfiles').strip()
+        # xattr occasionally returns an empty entry
+        if num_files == '':
+            dir_info['files'] = 0
+            dir_info['size'] = 0
+            directories.append(dir_info)
+        dir_info['files'] = num_files[:-1]
         dir_info['size'] = int(xattr.getxattr(full_path,
                                               'ceph.dir.rbytes')[:-1])
         directories.append(dir_info)
