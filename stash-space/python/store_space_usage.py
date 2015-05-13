@@ -127,7 +127,7 @@ def get_top_level_info(dirpath):
         dir_info['name'] = full_path
         num_files = xattr.getxattr(full_path, 'ceph.dir.rfiles').strip()
         # xattr occasionally returns an empty entry
-        if num_files == '':
+        if num_files[:-1] == '':
             dir_info['files'] = 0
             dir_info['size'] = 0
             directories.append(dir_info)
@@ -143,7 +143,7 @@ def get_top_level_info(dirpath):
         dir_info['name'] = full_path
         num_files = xattr.getxattr(full_path, 'ceph.dir.rfiles').strip()
         # xattr occasionally returns an empty entry
-        if num_files == '':
+        if num_files[:-1] == '':
             dir_info['files'] = 0
             dir_info['size'] = 0
             directories.append(dir_info)
