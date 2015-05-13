@@ -11,6 +11,7 @@ import pwd
 import grp
 import datetime
 
+import xattr
 import elasticsearch
 import elasticsearch.helpers
 
