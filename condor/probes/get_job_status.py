@@ -148,7 +148,9 @@ def save_collector_status(client, index_base=None, record=None, host=None, time=
         return
     if index_base is None:
         index_base = ES_SCHEDD_STATE_INDEX_BASE
-    index_name = '{0}-{1}-{2}'.format(index_base, year, week)
+    timezone = pytz.timezone(get_timezone())
+    current_time = timezone.localize(datetime.datetime.now())
+    index_name = '{0}-{1}'.format(index_base, current_time.isocalendar()[0])
     for status in record:
 
         es_record = {'jobs': record[status],
