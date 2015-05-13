@@ -108,6 +108,33 @@ def get_dir_size(root, inodes):
     total_size += os.stat(root).st_size
     return total_size
 
+def get_top_level_info(dirpath):
+    """
+    Temporary function to just get top level info on user and project directories
+    :param dirpath: path to stash installation
+    :return: a list with dictionaries containing user/project information
+    """
+
+    directories = []
+    if not os.path.isdir(dirpath):
+        return directories
+    for entry in os.listdir(os.path.join(dirpath, 'user')):
+        dir_info = {}
+        full_path = os.path.join(dirpath, 'user', entry)
+        if not os.path.isdir(full_path):
+            continue
+        dir_info['name'] = full_path
+        dir_info['files'] = int(xattr.getxattr('/stash/user/sthapa', 'ceph.dir.rfiles')[:-1])
+        dir_info['size'] = int(xattr.getxattr('/stash/user/sthapa', 'ceph.dir.rbytes')[:-1])
+    for entry in os.listdir(os.path.join(dirpath, 'project/')):
+        full_path = os.path.join(dirpath, 'project', entry)
+        if not os.path.isdir(full_path):
+            continue
+        dir_info['name'] = full_path
+        dir_info['files'] = int(xattr.getxattr('/stash/user/sthapa', 'ceph.dir.rfiles')[:-1])
+        dir_info['size'] = int(xattr.getxattr('/stash/user/sthapa', 'ceph.dir.rbytes')[:-1])
+
+    return directories
 
 def traverse_directory(dirpath, index=None, ceph_fs=False):
     """
@@ -124,6 +151,21 @@ def traverse_directory(dirpath, index=None, ceph_fs=False):
     if not os.path.isdir(dirpath):
         return
     records = []
+
+    if ceph_fs:
+        # for ceph directories just get top-level user and project information
+        # for now, this will get removed to get more detailed information on the new
+        # Ceph filesystem
+        directories = get_top_level_info(dirpath)
+        for dir in directories:
+            create_record(dir['name'],
+                          dir['files'],
+                          current_date,
+                          dir['size'],
+                          index)
+        save_records(records)
+        return
+
     if ceph_fs:
         topdown = True
     else:
