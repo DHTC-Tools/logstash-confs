@@ -131,6 +131,7 @@ def get_top_level_info(dirpath):
             dir_info['files'] = 0
             dir_info['size'] = 0
             directories.append(dir_info)
+            continue
         dir_info['files'] = num_files[:-1]
         dir_info['size'] = int(xattr.getxattr(full_path,
                                               'ceph.dir.rbytes')[:-1])
@@ -146,6 +147,7 @@ def get_top_level_info(dirpath):
             dir_info['files'] = 0
             dir_info['size'] = 0
             directories.append(dir_info)
+            continue
         dir_info['files'] = num_files[:-1]
         dir_info['size'] = int(xattr.getxattr(full_path,
                                               'ceph.dir.rbytes')[:-1])
