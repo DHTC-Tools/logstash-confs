@@ -125,15 +125,21 @@ def get_top_level_info(dirpath):
         if not os.path.isdir(full_path):
             continue
         dir_info['name'] = full_path
-        dir_info['files'] = int(xattr.getxattr('/stash/user/sthapa', 'ceph.dir.rfiles')[:-1])
-        dir_info['size'] = int(xattr.getxattr('/stash/user/sthapa', 'ceph.dir.rbytes')[:-1])
+        dir_info['files'] = int(xattr.getxattr('/stash/user/sthapa',
+                                               'ceph.dir.rfiles')[:-1])
+        dir_info['size'] = int(xattr.getxattr('/stash/user/sthapa',
+                                              'ceph.dir.rbytes')[:-1])
+        directories.append(dir_info)
     for entry in os.listdir(os.path.join(dirpath, 'project/')):
         full_path = os.path.join(dirpath, 'project', entry)
         if not os.path.isdir(full_path):
             continue
         dir_info['name'] = full_path
-        dir_info['files'] = int(xattr.getxattr('/stash/user/sthapa', 'ceph.dir.rfiles')[:-1])
-        dir_info['size'] = int(xattr.getxattr('/stash/user/sthapa', 'ceph.dir.rbytes')[:-1])
+        dir_info['files'] = int(xattr.getxattr('/stash/user/sthapa',
+                                               'ceph.dir.rfiles')[:-1])
+        dir_info['size'] = int(xattr.getxattr('/stash/user/sthapa',
+                                              'ceph.dir.rbytes')[:-1])
+        directories.append(dir_info)
 
     return directories
 
