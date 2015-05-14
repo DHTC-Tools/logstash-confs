@@ -1,5 +1,5 @@
 {
-  "template" : "osg-connect-job-history-*",
+  "template" : "*-job-history-*",
   "settings" : {
     "analysis" : {
       "analyzer": {

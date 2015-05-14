@@ -1,5 +1,5 @@
 {
-  "template" : "osg-connect-schedd-state",
+  "template" : "*-schedd-state",
   "settings" : {
     "analysis" : {
       "analyzer": {

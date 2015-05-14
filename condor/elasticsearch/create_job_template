@@ -1,5 +1,5 @@
 {
-  "template" : "osg-connect-job-details-*",
+  "template" : "*-job-details-*",
   "settings" : {
     "analysis" : {
       "analyzer": {

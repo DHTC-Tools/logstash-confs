@@ -3,9 +3,10 @@
   "settings" : {
     "analysis" : {
       "analyzer": {
-        "path-analyzer": {
+        "lowercase_whitespace": {
           "type": "custom",
-          "tokenizer":  "path-tokenizer"
+          "tokenizer":  "whitespace",
+          "filter": ["lowercase"]
         }
       }
     },
@@ -34,7 +35,7 @@
         },
         "path": {
           "type": "string",
-          "analyzer": "path-analyzer"
+          "analyzer": "lowercase_whitespace"
         },
         "user": {
           "type": "string"
