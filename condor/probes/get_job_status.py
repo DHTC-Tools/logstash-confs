@@ -129,7 +129,6 @@ def save_job_records(client=None, index_base=None, records=None):
     current_time = timezone.localize(datetime.datetime.now())
     year, week, _ = current_time.isocalendar()
     index_name = '{0}-{1}-{2}'.format(index_base, year, week)
-    print index_name
     helpers.bulk(client,
                  records,
                  index=index_name,
@@ -159,7 +158,6 @@ def save_collector_status(client, index_base=None, record=None, host=None, time=
                      'status': status,
                      'host': host,
                      '@timestamp': time}
-        print index_name
         client.index(index=index_name, doc_type='schedd_status', body=es_record)
 
 

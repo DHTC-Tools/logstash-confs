@@ -1,3 +1,4 @@
 # Cron job running by default every minute
-* * * * *  /usr/bin/get_job_status.py --schedd-index-base  --job-index-base
+# place in /etc/cron.d
+* * * * *  nobody /usr/bin/get_job_status.py --schedd-index-base  --job-index-base
 
