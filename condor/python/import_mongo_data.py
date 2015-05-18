@@ -54,7 +54,6 @@ def get_month_records(year=2014, month=None, db=None):
     :param db: connection to mongodb
     :return: a list of classads stored as a dictionary
     """
-    classads = []
     if month is None or db is None:
         return classads
     start_date = datetime.date(year, month, 1)
@@ -62,17 +61,17 @@ def get_month_records(year=2014, month=None, db=None):
     db_query = {"CompletionDate": {"$gte": time.mktime(start_date.timetuple()),
                                    "$lt": time.mktime(end_date.timetuple())}}
     for classad in db.history_records.find(db_query):
-        classads.append(classad)
-    return classads
+        yield classad
 
 
-def export_to_es(classads, year, month, es_client):
+def export_to_es(classads, year, month, es_client, mongo_client):
     """
     export classads to appropriate index in elasticsearch
     :param classads: list of classads stored as dicts (e.g. [{}. {}])
     :param year: year that the classads were obtained from
     :param month: year that the classads were obtained from
     :param es_client: Elasticsearch client instance
+    :param mongo_client: connection to mongodb
     :return: nothing
     """
     if not classads:
@@ -80,7 +79,7 @@ def export_to_es(classads, year, month, es_client):
     actions = []
     index = "osg-connect-job-history-{0}-{1:0>2}".format(year, month)
     timezone = pytz.timezone('US/Central')
-    for classad in classads:
+    for classad in get_month_records(year, month, mongo_client):
         classad_insert = {"_opt_type": "index",
                           "_index": index,
                           "_type": "history-record"}
@@ -118,8 +117,7 @@ def run_main():
 
     mongodb_client = get_mongo_client()
     es_client = get_es_client()
-    classads = get_month_records(args.year, args.month, mongodb_client)
-    export_to_es(classads, args.year, args.month, es_client)
+    export_to_es(classads, args.year, args.month, es_client, mongodb_client)
 
 
 if __name__ == '__main__':
