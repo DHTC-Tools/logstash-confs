@@ -79,6 +79,8 @@ def export_to_es(classads, year, month, es_client, mongo_client):
     actions = []
     index = "osg-connect-job-history-{0}-{1:0>2}".format(year, month)
     timezone = pytz.timezone('US/Central')
+    indexed = 0
+    errors = []
     for classad in get_month_records(year, month, mongo_client):
         classad_insert = {"_opt_type": "index",
                           "_index": index,
@@ -91,9 +93,14 @@ def export_to_es(classads, year, month, es_client, mongo_client):
             timestamp = datetime.datetime(year, month, 1, 0, 0, 0, tzinfo=pytz.utc)
         classad_insert['@timestamp'] = timestamp.isoformat()
         actions.append(classad_insert)
-    results = elasticsearch.helpers.bulk(es_client, actions)
-    sys.stdout.write("Number of documents indexed: {0}\n".format(results[0]))
-    if results[1]:
+        if len(actions) > 10000:
+            results = elasticsearch.helpers.bulk(es_client, actions)
+            indexed += results[0]
+            if results[1]:
+                errors.append(results[1])
+            actions = []
+    sys.stdout.write("Number of documents indexed: {0}\n".format(indexed))
+    if errors:
         sys.stderr.write("Errors encountered:")
         for err in results[1]:
             sys.stderr.write("{0}\n".format(err))
