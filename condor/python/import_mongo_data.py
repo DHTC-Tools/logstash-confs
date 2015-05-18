@@ -55,7 +55,7 @@ def get_month_records(year=2014, month=None, db=None):
     :return: a list of classads stored as a dictionary
     """
     if month is None or db is None:
-        return classads
+        return []
     start_date = datetime.date(year, month, 1)
     end_date = datetime.date(year + (month/12), (month % 12) + 1, 1)
     db_query = {"CompletionDate": {"$gte": time.mktime(start_date.timetuple()),
@@ -64,18 +64,16 @@ def get_month_records(year=2014, month=None, db=None):
         yield classad
 
 
-def export_to_es(classads, year, month, es_client, mongo_client):
+def export_to_es(year, month, es_client, mongo_client):
     """
     export classads to appropriate index in elasticsearch
-    :param classads: list of classads stored as dicts (e.g. [{}. {}])
+
     :param year: year that the classads were obtained from
     :param month: year that the classads were obtained from
     :param es_client: Elasticsearch client instance
     :param mongo_client: connection to mongodb
     :return: nothing
     """
-    if not classads:
-        return
     actions = []
     index = "osg-connect-job-history-{0}-{1:0>2}".format(year, month)
     timezone = pytz.timezone('US/Central')
@@ -124,7 +122,7 @@ def run_main():
 
     mongodb_client = get_mongo_client()
     es_client = get_es_client()
-    export_to_es(classads, args.year, args.month, es_client, mongodb_client)
+    export_to_es(args.year, args.month, es_client, mongodb_client)
 
 
 if __name__ == '__main__':
