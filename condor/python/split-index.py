@@ -93,7 +93,10 @@ def reindex(source_index, target_index, start_date, end_date, client):
 
 def get_es_client():
     """ Instantiate DB client and pass connection back """
-    return elasticsearch.Elasticsearch(hosts=ES_NODES,retry_on_timeout=True,max_retries=10,timeout=300) 
+    return elasticsearch.Elasticsearch(hosts=ES_NODES,
+                                       retry_on_timeout=True,
+                                       max_retries=10,
+                                       timeout=300)
 
 
 def scan_and_reindex(start_date=None, end_date=None, client=None):
