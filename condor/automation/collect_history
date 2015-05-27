@@ -27,11 +27,9 @@ RUNTIME_USER=nobody
 RUNTIME_GROUP=nobody
 RUNTIME_HOME=/tmp
 NICE_LEVEL=19
-REDIS_CHANNEL="default"
-REDIS_SERVER="db.mwt2.org"
 
 [ -r /etc/default/$name ] && . /etc/default/$name
-[ -r /etc/sysconfig/$name ] && . /etc/sysconfig/$name
+[ -r /etc/sysconfig/$name.conf ] && . /etc/sysconfig/$name.conf
 
 
 program=/usr/bin/collect_history_info.py

@@ -1,57 +1,24 @@
 #!/usr/bin/env python
 
-# Copyright 2014-2015 University of Chicago
+# Copyright 2015 University of Chicago
+# Available under Apache 2.0 License
 
 import argparse
 import datetime
 import sys
 
 import pytz
-import htcondor
 import elasticsearch
 from elasticsearch import helpers
 
+import probe_libs.htcondor_helpers
+
 VERSION = '0.3'
-JOB_STATUS = {0: 'Unexpanded',
-              1: 'Idle',
-              2: 'Running',
-              3: 'Removed',
-              4: 'Completed',
-              5: 'Held',
-              6: 'Submission Error'}
-JOB_ATTRS = ['ProcId',
-             'ClusterId',
-             'GlobalJobId',
-             'JobStatus', 
-             'User', 
-             'ProjectName', 
-             'QDate', 
-             'JobStartDate',
-             'CommittedTime',
-             'RemoteWallClockTime',
-             'RemoteSysCpu',
-             'RemoteUserCpu',
-             'MATCH_EXP_JOBGLIDEIN_ResourceName',
-             'CumulativeSuspensionTime']
 ES_HOST = ['uct2-es-door.mwt2.org', 'uct2-es-head.mwt2.org']
 ES_JOB_DETAILS_INDEX_BASE = 'osg-connect-job-details'
 ES_SCHEDD_STATE_INDEX_BASE = 'osg-connect-schedd-state'
 
 
-def get_timezone():
-    """
-    Query the system and return timezone on RHEL/SL systems
-
-    :return: a string with the timezone for the system
-    """
-    try:
-        for line in open('/etc/sysconfig/clock'):
-            field, value = line.split('=')
-            if field.strip() == 'ZONE':
-                return value.replace('"', '').strip()
-        return ""
-    except IOError:
-        return ""
 
 
 def query_scheduler(schedd_index_base, job_detail_index_base):
@@ -67,50 +34,14 @@ def query_scheduler(schedd_index_base, job_detail_index_base):
         return
     if not (schedd_index_base and job_detail_index_base):
         return
-    schedd = htcondor.Schedd()
-    jobs = schedd.query("True", JOB_ATTRS)
-    user_job_status = {}
-    timezone = pytz.timezone(get_timezone())
-    current_time = timezone.localize(datetime.datetime.now())
-    job_records = []
-    current_host = None
-    for job in jobs:
-        status = JOB_STATUS[job['JobStatus']]
-        if status in user_job_status:
-            user_job_status[status] += 1
-        else:
-            user_job_status[status] = 1
-        job_record = {}
-        for attr in JOB_ATTRS:
-            try:
-                job_record[attr] = job[attr]
-            except KeyError:
-                # a lot of attributes will be missing if job is not running
-                pass
-        job_record['JobStatus'] = status
-        job_record['@timestamp'] = current_time.isoformat()
-        if status == 'Idle':
-            queue_time = datetime.datetime.fromtimestamp(job_record['QDate'])
-            queue_wait = current_time - timezone.localize(queue_time)
-            job_record['QueueTime'] = queue_wait.seconds
-        if 'MATCH_EXP_JOBGLIDEIN_ResourceName' in job_record:
-            job_record['Resource'] = job_record['MATCH_EXP_JOBGLIDEIN_ResourceName']
-            if job_record['Resource'] == "uc3-mon.mwt2.org":
-                job_record['Resource'] = 'UC3'
-            del job_record['MATCH_EXP_JOBGLIDEIN_ResourceName']
-        (user, submit_host) = job_record['User'].split('@')
-        job_record['User'] = user
-        job_record['SubmitHost'] = submit_host
-        if current_host is None:
-            current_host = submit_host
-        job_records.append(job_record)
-
-    save_job_records(client, job_detail_index_base, job_records)
-    save_collector_status(client,
-                          schedd_index_base,
-                          user_job_status,
-                          current_host,
-                          current_time.isoformat())
+    schedds = probe_libs.htcondor_helpers.get_local_schedds()
+    for schedd in schedds:
+        job_records = probe_libs.htcondor_helpers.get_schedd_jobs(schedds)
+        save_job_records(client, job_detail_index_base, job_records)
+    save_schedd_status(client,
+                       schedd_index_base,
+                       current_host,
+                       current_time.isoformat())
 
 
 def save_job_records(client=None, index_base=None, records=None):
@@ -136,9 +67,9 @@ def save_job_records(client=None, index_base=None, records=None):
                  stats_only=True)
 
 
-def save_collector_status(client, index_base=None, record=None, host=None, time=None):
+def save_schedd_status(client, index_base=None, record=None, host=None, time=None):
     """
-    Save collector status to ES
+    Save schedd status to ES
     :param client: ES client to use for connections
     :param index_base: base for index name
     :param record: dictionary with jobs states and number of jobs in that state
@@ -178,7 +109,7 @@ if __name__ == '__main__':
     parser.add_argument('--job-index-base', dest='job_index_base',
                         default=ES_JOB_DETAILS_INDEX_BASE,
                         help='Base name to use for indexing job history data')
-
+    parser.add_argument('--version', action='version', version='%(prog)s ' + VERSION)
     args = parser.parse_args(sys.argv[1:])
     es_client = get_es_client()
     query_scheduler(args.schedd_index_base, args.job_index_base)
