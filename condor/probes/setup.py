@@ -13,7 +13,8 @@ setup(name='htcondor-es-probes',
       url='https://github.com/DHTC-Tools/logstash-confs/tree/master/condor',
       packages=['probe_libs'],
       scripts=['collect_history_info.py', 'get_job_status.py'],
-      data_files=[('/etc/init.d/', 'scripts/collect_history'),
-                  ('/etc/cron.d/', 'config/schedd_probe'),
-                  ('/etc/sysconfig', 'config/collect_history')]
+      data_files=[('/etc/init.d/', ['scripts/collect_history']),
+                  ('/etc/cron.d/', ['config/schedd_probe']),
+                  ('/etc/sysconfig', ['config/collect_history'])],
+      license = 'Apache 2.0'
      )
