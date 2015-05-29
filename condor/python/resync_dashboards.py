@@ -30,6 +30,6 @@ if __name__ == '__main__':
                                             SOURCE_INDEX,
                                             TARGET_INDEX,
                                             scroll='30m')
-    sys.stdout.write(results)
+    sys.stdout.write(str(results))
 
 
