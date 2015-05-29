@@ -1,0 +1,2 @@
+REDIS_CHANNEL="default"
+REDIS_SERVER="db.mwt2.org"
