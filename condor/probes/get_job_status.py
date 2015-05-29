@@ -6,6 +6,7 @@
 import argparse
 import datetime
 import sys
+import socket
 
 import pytz
 import elasticsearch
@@ -34,14 +35,19 @@ def query_scheduler(schedd_index_base, job_detail_index_base):
         return
     if not (schedd_index_base and job_detail_index_base):
         return
+    timezone = pytz.timezone(probe_libs.htcondor_helpers.get_timezone())
+    current_time = timezone.localize(datetime.datetime.now())
+    current_host = socket.getfqdn()
     schedds = probe_libs.htcondor_helpers.get_local_schedds()
     for schedd in schedds:
-        job_records = probe_libs.htcondor_helpers.get_schedd_jobs(schedds)
+        job_records = probe_libs.htcondor_helpers.get_schedd_jobs(schedd)
+        states = probe_libs.htcondor_helpers.schedd_states(schedd)
         save_job_records(client, job_detail_index_base, job_records)
-    save_schedd_status(client,
-                       schedd_index_base,
-                       current_host,
-                       current_time.isoformat())
+        save_schedd_status(client,
+                           schedd_index_base,
+                           states,
+                           current_host,
+                           current_time.isoformat())
 
 
 def save_job_records(client=None, index_base=None, records=None):
@@ -56,7 +62,7 @@ def save_job_records(client=None, index_base=None, records=None):
         return
     if not index_base:
         index_base = ES_JOB_DETAILS_INDEX_BASE
-    timezone = pytz.timezone(get_timezone())
+    timezone = pytz.timezone(probe_libs.htcondor_helpers.get_timezone())
     current_time = timezone.localize(datetime.datetime.now())
     year, week, _ = current_time.isocalendar()
     index_name = '{0}-{1}-{2}'.format(index_base, year, week)
@@ -80,11 +86,10 @@ def save_schedd_status(client, index_base=None, record=None, host=None, time=Non
         return
     if not index_base:
         index_base = ES_SCHEDD_STATE_INDEX_BASE
-    timezone = pytz.timezone(get_timezone())
+    timezone = pytz.timezone(probe_libs.htcondor_helpers.get_timezone())
     current_time = timezone.localize(datetime.datetime.now())
     index_name = '{0}-{1}'.format(index_base, current_time.isocalendar()[0])
     for status in record:
-
         es_record = {'jobs': record[status],
                      'status': status,
                      'host': host,
