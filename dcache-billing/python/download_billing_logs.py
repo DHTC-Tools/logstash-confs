@@ -49,7 +49,7 @@ if __name__ == '__main__':
                         help='Date to download')
 
     args = parser.parse_args(sys.argv[1:])
-    if len(args.date) != 8:
+    if len(args.date) != 10:
         sys.stderr.write("Invalid date argument: {0}\n".format(args.date))
     try:
         int(args.date)
