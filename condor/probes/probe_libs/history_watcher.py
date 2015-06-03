@@ -1,7 +1,6 @@
 # Copyright 2015 University of Chicago
 # Available under Apache 2.0 License
 
-
 import os
 import cStringIO
 import re
@@ -135,7 +134,7 @@ class HistoryWatcher:
                     except ValueError:
                         classad[key.strip()] = value.strip()
                         continue
-                if value[0] == '"' and value[-1] == '"':
+                if len(value) >= 2 and value[0] == '"' and value[-1] == '"':
                     value = value[1:-1]
                 if key == 'JobStatus':
                     value = JOB_STATUS[value]
