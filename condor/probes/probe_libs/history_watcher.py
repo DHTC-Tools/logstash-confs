@@ -4,6 +4,7 @@
 import os
 import cStringIO
 import re
+import time
 
 JOB_STATUS = {'0': 'Unexpanded',
               '1': 'Idle',
@@ -80,7 +81,12 @@ class HistoryWatcher:
             where = self._filehandle.tell()
             line = self._filehandle.readline()
             if not line:
-                new_stat = os.stat(self._filename)
+                try:
+                    new_stat = os.stat(self._filename)
+                except OSError:
+                    # file may not be there due to rotation, wait a while and check again
+                    time.sleep(0.5)
+                    continue
                 if self._current_inode != new_stat.st_ino:
                     self._filehandle.close()
                     self._current_inode = new_stat.st_ino
