@@ -110,8 +110,6 @@ def get_schedd_jobs(schedd_classad=None, job_attrs=JOB_ATTRS):
         (user, submit_host) = job_record['User'].split('@')
         job_record['User'] = user
         job_record['SubmitHost'] = submit_host
-        if current_host is None:
-            current_host = submit_host
         job_records.append(job_record)
     return job_records
 
