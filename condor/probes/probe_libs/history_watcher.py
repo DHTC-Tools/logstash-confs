@@ -93,6 +93,9 @@ class HistoryWatcher:
                     self._filehandle = open(self._filename)
                     where = self._filehandle.tell()
                 self._filehandle.seek(where)
+                # give up control and then pause when starting again
+                yield {}
+                time.sleep(30)
             else:
                 self._buff += line
                 classads, self._buff = self.__parse_classad(self._buff)
