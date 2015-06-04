@@ -53,7 +53,7 @@ def get_local_schedds():
     :return:  a list of classads for local schedds
     """
     schedd_list = []
-    temp_list = htcondor.Collector().locate(htcondor.DaemonTypes.Schedd)
+    temp_list = htcondor.Collector().locateAll(htcondor.DaemonTypes.Schedd)
     local_hostname = socket.getfqdn()
     for schedd in temp_list:
         if 'Name' not in schedd:

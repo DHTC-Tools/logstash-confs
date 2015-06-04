@@ -1,10 +1,10 @@
 # Copyright 2015 University of Chicago
 # Available under Apache 2.0 License
 
-
 import os
 import cStringIO
 import re
+import time
 
 JOB_STATUS = {'0': 'Unexpanded',
               '1': 'Idle',
@@ -43,7 +43,6 @@ class HistoryWatcher:
         self._filename = filename
         self._buff = ""
         self._current_inode = 0
-        self._current_location = 0
         self._filehandle = None
         # used in parse_classad
         self._completion_re = re.compile(r'\*\*\*\s+Offset\s+=\s+\d+.*CompletionDate\s+=\s+(\d+)')
@@ -63,7 +62,7 @@ class HistoryWatcher:
         :return: a dict with classads
         """
 
-        if not self.__filename:
+        if not self._filename:
             yield {}
 
         if not (os.path.exists(self._filename) and
@@ -79,22 +78,29 @@ class HistoryWatcher:
         self._current_inode = file_stat.st_ino
 
         while True:
-            where = self.__filehandle.tell()
-            line = self.__filehandle.readline()
+            where = self._filehandle.tell()
+            line = self._filehandle.readline()
             if not line:
-                new_stat = os.stat(self._filename)
+                try:
+                    new_stat = os.stat(self._filename)
+                except OSError:
+                    # file may not be there due to rotation, wait a while and check again
+                    time.sleep(0.5)
+                    continue
                 if self._current_inode != new_stat.st_ino:
                     self._filehandle.close()
                     self._current_inode = new_stat.st_ino
                     self._filehandle = open(self._filename)
-                    self._current_location = self._filehandle.tell()
+                    where = self._filehandle.tell()
                 self._filehandle.seek(where)
             else:
-                self.__buff += line
-                classads, self._buff = self._parse_classad(self._buff)
+                self._buff += line
+                classads, self._buff = self.__parse_classad(self._buff)
                 if classads:
                     for classad in classads:
                         yield classad
+                else:
+                    yield {}
 
     def __parse_classad(self, classad_string):
         """
@@ -134,7 +140,7 @@ class HistoryWatcher:
                     except ValueError:
                         classad[key.strip()] = value.strip()
                         continue
-                if value[0] == '"' and value[-1] == '"':
+                if len(value) >= 2 and value[0] == '"' and value[-1] == '"':
                     value = value[1:-1]
                 if key == 'JobStatus':
                     value = JOB_STATUS[value]

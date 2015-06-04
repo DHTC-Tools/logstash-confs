@@ -13,7 +13,7 @@ import redis
 
 import probe_libs.history_watcher
 
-VERSION = '0.4'
+VERSION = '0.5'
 REDIS_SERVER = 'db.mwt2.org'
 REDIS_CHANNEL = 'osg-connect-history'
 CONDOR_HISTORY_LOG_DIR = '/var/lib/condor/'
@@ -67,15 +67,19 @@ def watch_history_dirs(server=None, channel=None):
     watchers = []
     client = get_redis_client(server)
     for directory in dirs:
-        if not os.path.isdir(directory):
+        history_dir = os.path.join(CONDOR_HISTORY_LOG_DIR, directory)
+        if not os.path.isdir(history_dir):
             continue
-        history_file = os.path.join(directory, 'history')
+        history_file = os.path.join(history_dir, 'history')
         if os.path.isfile(history_file):
             watchers.append(probe_libs.history_watcher.HistoryWatcher(history_file))
 
+    generators = []
+    for watcher in watchers:
+        generators.append(watcher.next_classad())
     while True:
-        for watcher in watchers:
-            classad = watcher.next_classad()
+        for generator in generators:
+            classad = next(generator)
             if classad:
                 publish_classad(classad, channel, client)
 
