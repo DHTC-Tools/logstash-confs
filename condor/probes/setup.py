@@ -6,7 +6,7 @@
 from distutils.core import setup
 
 setup(name='htcondor-es-probes',
-      version='0.6.2',
+      version='0.6.3',
       description='HTCondor probes for Elasticsearch analytics',
       author='Suchandra Thapa',
       author_email='sthapa@ci.uchicago.edu',
