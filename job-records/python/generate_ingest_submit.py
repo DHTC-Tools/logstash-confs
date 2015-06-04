@@ -147,6 +147,7 @@ def create_weekly_submission(start_date, end_date, work_directory,
         dst_file = os.path.basename(filename)
         shutil.copyfile(filename, os.path.join(work_directory, dst_file))
     os.mkdir(os.path.join(work_directory, "job_logs"))
+    os.chmod(os.path.join(work_directory, "process_logs.py"), 0o755)
     os.chmod(os.path.join(work_directory, "download_logs.py"), 0o755)
     os.chmod(os.path.join(work_directory, "ingest_weekly.sh"), 0o755)
 
