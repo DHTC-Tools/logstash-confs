@@ -47,7 +47,8 @@ class HistoryWatcher:
         # used in parse_classad
         self._completion_re = re.compile(r'\*\*\*\s+Offset\s+=\s+\d+.*CompletionDate\s+=\s+(\d+)')
 
-    def set_file(self, filename=None):
+    @filename.setter
+    def filename(self, filename=None):
         """
         Set file to watch for the class
 
@@ -55,27 +56,34 @@ class HistoryWatcher:
         """
         self._filename = filename
 
+    @property
+    def filename(self):
+        """
+        Return the filename that's being watched
+        :return: filename of watched file
+        """
+        return self._filename
+
     def next_classad(self):
         """
         Generator that gets the latest classad from watched file
 
         :return: a dict with classads
         """
-
         if not self._filename:
             yield {}
 
-        if not (os.path.exists(self._filename) and
-                os.path.isfile(self._filename)):
+        if not os.path.isfile(self._filename):
             yield {}
 
-        try:
-            self._filehandle = open(self._filename)
-        except IOError:
-            yield {}
-
-        file_stat = os.stat(self._filename)
-        self._current_inode = file_stat.st_ino
+        if self._filehandle is None:
+            try:
+                self._filehandle = open(self._filename)
+            except IOError:
+                yield {}
+        if self._current_inode == 0:
+            file_stat = os.stat(self._filename)
+            self._current_inode = file_stat.st_ino
 
         while True:
             where = self._filehandle.tell()
@@ -152,3 +160,38 @@ class HistoryWatcher:
                 classad[key] = value
                 remaining_buffer += line
         return classads, remaining_buffer
+
+    def get_state(self):
+        """
+        Create a record of current state that can be used at a later point
+        to restore file watcher to the same position if possible
+
+        :return: a tuple (filename, inode, position) with state information
+        """
+
+        return self._filename, self._current_inode, self._filehandle.tell()
+
+    def restore_state(self, state_tuple):
+        """
+        Restore state information from a state tuple so that file watching
+        can be continued, note, this may not succeed if the file is missing
+        or has been rotated
+
+        :param state_tuple: a tuple with filename, inode, and file_position
+        :return: True if state has been restored, False otherwise
+        """
+
+        if not os.path.isfile(state_tuple[0]):
+            self._filename = state_tuple[0]
+            self._current_inode = 0
+            return False
+        self._filename = state_tuple[0]
+        try:
+            self._filehandle = open(self._filename)
+        except IOError:
+            return False
+        current_inode = os.stat(self._filename).st_ino
+        if current_inode != state_tuple[1]:
+            return False
+        self._current_inode = state_tuple[1]
+        self._filehandle.seek(state_tuple[2])
