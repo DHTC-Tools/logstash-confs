@@ -15,6 +15,7 @@ setup(name='htcondor-es-probes',
       scripts=['collect_history_info.py', 'get_job_status.py'],
       data_files=[('/etc/init.d/', ['scripts/collect_history']),
                   ('/etc/cron.d/', ['config/schedd_probe']),
+                  ('/var/lib/collect_history', []),
                   ('/etc/sysconfig', ['config/collect_history'])],
-      license = 'Apache 2.0'
+      license='Apache 2.0'
      )
