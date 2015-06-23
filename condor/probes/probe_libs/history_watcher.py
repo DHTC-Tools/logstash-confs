@@ -47,6 +47,14 @@ class HistoryWatcher:
         # used in parse_classad
         self._completion_re = re.compile(r'\*\*\*\s+Offset\s+=\s+\d+.*CompletionDate\s+=\s+(\d+)')
 
+    @property
+    def filename(self):
+        """
+        Return the filename that's being watched
+        :return: filename of watched file
+        """
+        return self._filename
+
     @filename.setter
     def filename(self, filename=None):
         """
@@ -55,14 +63,6 @@ class HistoryWatcher:
         :param filename: path to history file that should be watched
         """
         self._filename = filename
-
-    @property
-    def filename(self):
-        """
-        Return the filename that's being watched
-        :return: filename of watched file
-        """
-        return self._filename
 
     def next_classad(self):
         """
