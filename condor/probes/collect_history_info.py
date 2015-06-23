@@ -106,12 +106,10 @@ def save_state_information(watchers, filename=None):
 
     for watcher in watchers:
         state_info.append(watcher.get_state())
-    try:
-        filehandle = open(filename, 'wb')
+    with open(filename, 'wb') as filehandle:
         cPickle.dump(state_info, filehandle)
-        filehandle.close()
-    except IOError:
-        return False
+        return True
+    return False
 
 def restore_state_information(filename=None):
     """
@@ -122,8 +120,7 @@ def restore_state_information(filename=None):
     """
     if filename is None:
         return []
-    try:
-        filehandle = open(filename, 'rb')
+    with open(filename, 'rb')  as filehandle:
         state_info = cPickle.load(filehandle)
         watchers = []
         for state in state_info:
@@ -131,8 +128,7 @@ def restore_state_information(filename=None):
             if watcher.restore_state(state):
                 watchers.append(watcher)
         return watchers
-    except IOError:
-        return []
+    return []
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Create a condor submit file '

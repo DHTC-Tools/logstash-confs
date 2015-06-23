@@ -195,3 +195,4 @@ class HistoryWatcher:
             return False
         self._current_inode = state_tuple[1]
         self._filehandle.seek(state_tuple[2])
+        return True
