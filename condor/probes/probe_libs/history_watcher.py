@@ -1,6 +1,8 @@
 # Copyright 2015 University of Chicago
 # Available under Apache 2.0 License
 
+__version__ = '0.7.1'
+
 import os
 import cStringIO
 import re

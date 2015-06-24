@@ -14,7 +14,7 @@ import redis
 
 import probe_libs.history_watcher
 
-VERSION = '0.6'
+VERSION = '0.7.1'
 REDIS_SERVER = 'db.mwt2.org'
 REDIS_CHANNEL = 'osg-connect-history'
 CONDOR_HISTORY_LOG_DIR = '/var/lib/condor/'
