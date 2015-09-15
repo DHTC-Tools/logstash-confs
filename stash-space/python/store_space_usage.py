@@ -202,7 +202,7 @@ def traverse_directory(dirpath, index=None, ceph_fs=False):
         record = create_record(root, len(files), current_date, size, index)
         if record:
             records.append(record)
-        if len(records > 5000):
+        if len(records) > 5000:
             # upload record information every 5k files to avoid using lots of memory
             save_records(records)
             records = []
