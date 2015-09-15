@@ -178,11 +178,11 @@ def traverse_directory(dirpath, index=None, ceph_fs=False):
         # for now, this will get removed to get more detailed information on the new
         # Ceph filesystem
         directories = get_top_level_info(dirpath)
-        for dir in directories:
-            record = create_record(dir['name'],
-                                   dir['files'],
+        for entry in directories:
+            record = create_record(entry['name'],
+                                   entry['files'],
                                    current_date,
-                                   dir['size'],
+                                   entry['size'],
                                    index)
             if record:
                 records.append(record)
