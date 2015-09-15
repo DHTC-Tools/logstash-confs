@@ -64,7 +64,7 @@ def create_record(dirpath, num_files, date, dir_size=None, index=None):
                      'mtime': mtime.isoformat(),
                      'user': user,
                      'group': group,
-                     'path': dirpath}
+                     'path': dirpath.decode('utf8', 'replace')}
     record = {'_index': index,
               '_source': record_fields,
               '_op_type': 'index',
@@ -108,6 +108,7 @@ def get_dir_size(root, inodes):
                 continue
     total_size += os.stat(root).st_size
     return total_size
+
 
 def get_top_level_info(dirpath):
     """
@@ -155,6 +156,7 @@ def get_top_level_info(dirpath):
 
     return directories
 
+
 def traverse_directory(dirpath, index=None, ceph_fs=False):
     """
     Traverse subdirectories and create a set of records
@@ -200,6 +202,10 @@ def traverse_directory(dirpath, index=None, ceph_fs=False):
         record = create_record(root, len(files), current_date, size, index)
         if record:
             records.append(record)
+        if len(records > 5000):
+            # upload record information every 5k files to avoid using lots of memory
+            save_records(records)
+            records = []
     save_records(records)
 
 
