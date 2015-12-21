@@ -16,20 +16,20 @@ JOB_STATUS = {0: 'Unexpanded',
               4: 'Completed',
               5: 'Held',
               6: 'Submission Error'}
-JOB_ATTRS = ['ProcId',
-             'ClusterId',
-             'GlobalJobId',
-             'JobStatus',
-             'User',
-             'ProjectName',
-             'QDate',
-             'JobStartDate',
-             'CommittedTime',
-             'RemoteWallClockTime',
-             'RemoteSysCpu',
-             'RemoteUserCpu',
-             'MATCH_EXP_JOBGLIDEIN_ResourceName',
-             'CumulativeSuspensionTime']
+JOB_ATTRS = {'ProcId': long,
+             'ClusterId': long,
+             'GlobalJobId': str,
+             'JobStatus': int,
+             'User': str,
+             'ProjectName': str,
+             'QDate': long,
+             'JobStartDate': long,
+             'CommittedTime': long,
+             'RemoteWallClockTime': long,
+             'RemoteSysCpu': long,
+             'RemoteUserCpu': long,
+             'MATCH_EXP_JOBGLIDEIN_ResourceName': str,
+             'CumulativeSuspensionTime': long}
 
 
 def get_timezone():
@@ -64,6 +64,7 @@ def get_local_schedds():
             schedd_list.append(schedd)
     return schedd_list
 
+
 def schedd_states(schedd_classad):
     """
     Returns information about the number of jobs in each job state for a schedd
@@ -76,6 +77,7 @@ def schedd_states(schedd_classad):
             'Idle': schedd_classad['TotalIdleJobs'],
             'Held': schedd_classad['TotalHeldJobs'],
             'Removed': schedd_classad['TotalRemovedJobs']}
+
 
 def get_schedd_jobs(schedd_classad=None, job_attrs=JOB_ATTRS):
     """
@@ -92,9 +94,18 @@ def get_schedd_jobs(schedd_classad=None, job_attrs=JOB_ATTRS):
     for job in jobs:
         status = JOB_STATUS[job['JobStatus']]
         job_record = {}
-        for attr in JOB_ATTRS:
+        for attr in JOB_ATTRS.keys():
             try:
-                job_record[attr] = job[attr]
+                if JOB_ATTRS[attr] == str:
+                    job_record[attr] = str(job[attr])
+                elif JOB_ATTRS[attr] == long:
+                    job_record[attr] = long(job[attr])
+                elif JOB_ATTRS[attr] == int:
+                    job_record[attr] = int(job[attr])
+                else:
+                    job_record[attr] = job[attr]
+            except ValueError:
+                continue
             except KeyError:
                 # a lot of attributes will be missing if job is not running
                 pass

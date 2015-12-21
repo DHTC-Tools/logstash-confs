@@ -14,12 +14,10 @@ from elasticsearch import helpers
 
 import probe_libs.htcondor_helpers
 
-VERSION = '0.3'
+VERSION = '0.4'
 ES_HOST = ['uct2-es-door.mwt2.org', 'uct2-es-head.mwt2.org']
 ES_JOB_DETAILS_INDEX_BASE = 'osg-connect-job-details'
 ES_SCHEDD_STATE_INDEX_BASE = 'osg-connect-schedd-state'
-
-
 
 
 def query_scheduler(schedd_index_base, job_detail_index_base):
@@ -95,7 +93,6 @@ def save_schedd_status(client, index_base=None, record=None, host=None, time=Non
                      'host': host,
                      '@timestamp': time}
         client.index(index=index_name, doc_type='schedd_status', body=es_record)
-
 
 
 def get_es_client():
