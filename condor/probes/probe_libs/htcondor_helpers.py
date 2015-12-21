@@ -7,7 +7,7 @@ import socket
 import htcondor
 import pytz
 
-__version__ = '0.7.2'
+__version__ = '0.7.3'
 
 
 JOB_STATUS = {0: 'Unexpanded',
@@ -80,7 +80,7 @@ def schedd_states(schedd_classad):
             'Removed': schedd_classad['TotalRemovedJobs']}
 
 
-def get_schedd_jobs(schedd_classad=None, job_attrs=JOB_ATTRS):
+def get_schedd_jobs(schedd_classad=None, job_attrs=JOB_ATTRS.keys()):
     """
     Queries local schedd to get job classads
 
