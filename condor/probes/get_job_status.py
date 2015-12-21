@@ -14,19 +14,20 @@ from elasticsearch import helpers
 
 import probe_libs.htcondor_helpers
 
-VERSION = '0.4'
+VERSION = '0.4.1'
 ES_HOST = ['uct2-es-door.mwt2.org', 'uct2-es-head.mwt2.org']
 ES_JOB_DETAILS_INDEX_BASE = 'osg-connect-job-details'
 ES_SCHEDD_STATE_INDEX_BASE = 'osg-connect-schedd-state'
 
 
-def query_scheduler(schedd_index_base, job_detail_index_base):
+def query_scheduler(schedd_index_base, job_detail_index_base, schedd_base_name):
     """
     Query a condor schedd instance and then update elastic search db with
     info obtained
 
     :param schedd_index_base: base for index name for schedd state records
     :param job_detail_index_base: base for index name for job detail records
+    :param schedd_base_name:
     """
     client = get_es_client()
     if not client:
@@ -36,7 +37,7 @@ def query_scheduler(schedd_index_base, job_detail_index_base):
     timezone = pytz.timezone(probe_libs.htcondor_helpers.get_timezone())
     current_time = timezone.localize(datetime.datetime.now())
     current_host = socket.getfqdn()
-    schedds = probe_libs.htcondor_helpers.get_local_schedds()
+    schedds = probe_libs.htcondor_helpers.get_local_schedds(schedd_base_name)
     for schedd in schedds:
         job_records = probe_libs.htcondor_helpers.get_schedd_jobs(schedd)
         states = probe_libs.htcondor_helpers.schedd_states(schedd)
@@ -111,7 +112,10 @@ if __name__ == '__main__':
     parser.add_argument('--job-index-base', dest='job_index_base',
                         default=ES_JOB_DETAILS_INDEX_BASE,
                         help='Base name to use for indexing job history data')
+    parser.add_argument('--schedd-base-name', dest='schedd_base_name',
+                        required=True,
+                        help='String that all schedd names must include (e.g. local.host.com)')
     parser.add_argument('--version', action='version', version='%(prog)s ' + VERSION)
     args = parser.parse_args(sys.argv[1:])
     es_client = get_es_client()
-    query_scheduler(args.schedd_index_base, args.job_index_base)
+    query_scheduler(args.schedd_index_base, args.job_index_base, args.schedd_base_name)

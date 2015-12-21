@@ -1,13 +1,14 @@
 # Copyright 2015 University of Chicago
 # Available under Apache 2.0 License
 
-__version__ = '0.7.1'
-
-import socket
 import datetime
+import socket
 
-import pytz
 import htcondor
+import pytz
+
+__version__ = '0.7.2'
+
 
 JOB_STATUS = {0: 'Unexpanded',
               1: 'Idle',
@@ -48,19 +49,19 @@ def get_timezone():
         return ""
 
 
-def get_local_schedds():
+def get_local_schedds(schedd_base_name=socket.getfqdn()):
     """
     Gets the local schedds and returns classads for them
 
+    :param schedd_base_name: string that schedds must have, defaults to fqdn
     :return:  a list of classads for local schedds
     """
     schedd_list = []
     temp_list = htcondor.Collector().locateAll(htcondor.DaemonTypes.Schedd)
-    local_hostname = socket.getfqdn()
     for schedd in temp_list:
         if 'Name' not in schedd:
             continue
-        if local_hostname in schedd['Name']:
+        if schedd_base_name in schedd['Name']:
             schedd_list.append(schedd)
     return schedd_list
 
@@ -84,6 +85,7 @@ def get_schedd_jobs(schedd_classad=None, job_attrs=JOB_ATTRS):
     Queries local schedd to get job classads
 
     :param schedd_classad: classad for schedd to query
+    :param job_attrs: job attributes to save from classads
     :return: a list of dicts containing job classads
     """
     job_records = []
@@ -125,4 +127,3 @@ def get_schedd_jobs(schedd_classad=None, job_attrs=JOB_ATTRS):
         job_record['SubmitHost'] = submit_host
         job_records.append(job_record)
     return job_records
-
