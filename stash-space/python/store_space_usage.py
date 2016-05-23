@@ -2,19 +2,17 @@
 
 # Copyright 2015 University of Chicago
 
-import sys
 import argparse
-import logging
-import pytz
+import datetime
+import grp
 import os
 import pwd
-import grp
-import datetime
+import sys
 
-import xattr
 import elasticsearch
 import elasticsearch.helpers
-
+import pytz
+import xattr
 
 ES_NODES = ['uct2-es-head.mwt2.org:9200', 'uct2-es-door.mwt2.org:9200']
 TZ_NAME = "US/Central"
